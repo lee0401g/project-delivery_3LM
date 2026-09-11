@@ -20,14 +20,14 @@
 | 虛擬化 | 必須支援並啟用 |
 | WSL2 | 可安裝或已安裝 |
 
-> 8 GB RAM 僅適合測試 不列為正式支援規格
+> 8 GB RAM 僅適合測試，不列為正式支援規格
 
 ## 3 教師示範
 
 1. 開啟檔案總管並進入教材資料夾
 2. 進入 `00-課前硬體與環境檢查` 資料夾
 3. 雙擊 [00_check-environment.cmd](00_check-environment.cmd)
-4. 說明畫面中的 PASS WARN INFO 與 UNKNOWN
+4. 說明畫面中的 `PASS`、`WARN`、`INFO` 與 `UNKNOWN`
 5. 示範如何重新執行檢查
 
 ## 4 學生實作
@@ -36,7 +36,7 @@
 
 1. 雙擊 [00_check-environment.cmd](00_check-environment.cmd)
 2. 等待環境檢查完成
-3. 查看 PASS WARN INFO 與 UNKNOWN
+3. 檢視 `PASS`、`WARN`、`INFO` 與 `UNKNOWN`
 4. 按任意鍵關閉視窗
 
 若無法直接雙擊 可開啟 CMD / PowerShell 後執行
@@ -44,7 +44,8 @@
 ```console
 .\00_check-environment.cmd
 ```
-腳本只會顯示檢查結果 不會建立或修改檔案
+
+腳本只會顯示檢查結果，不會建立或修改檔案
 
 腳本將檢查
 
@@ -93,11 +94,11 @@
 
 ### WSL 尚未安裝
 
-此階段只記錄狀態 單元 02 再進行安裝
+此階段只記錄狀態，單元 02 再進行安裝
 
 ### Docker 尚未安裝
 
-此階段只記錄狀態 單元 02 再進行安裝
+此階段只記錄狀態，單元 02 再進行安裝
 
 ### 找不到 NVIDIA GPU
 
