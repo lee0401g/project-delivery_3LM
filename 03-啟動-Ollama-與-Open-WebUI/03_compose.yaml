@@ -1,0 +1,29 @@
+name: local-ai
+
+services:
+  ollama:
+    image: ollama/ollama:0.33.3
+    restart: unless-stopped
+    volumes:
+      - ollama-data:/root/.ollama
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:v0.11.2
+    restart: unless-stopped
+    depends_on:
+      - ollama
+    ports:
+      - "127.0.0.1:3000:8080"
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      RAG_EMBEDDING_ENGINE: ollama
+      RAG_EMBEDDING_MODEL: embeddinggemma:300m-qat-q4_0
+      ANONYMIZED_TELEMETRY: "false"
+      DO_NOT_TRACK: "true"
+      SCARF_NO_ANALYTICS: "true"
+    volumes:
+      - open-webui-data:/app/backend/data
+
+volumes:
+  ollama-data:
+  open-webui-data:
