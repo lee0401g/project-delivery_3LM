@@ -26,7 +26,7 @@
 
 1. 開啟檔案總管並進入教材資料夾
 2. 進入 `00-課前硬體與環境檢查` 資料夾
-3. 在 [00_check-environment.cmd](00_check-environment.cmd) 上按兩下
+3. 在 `00_check-environment.cmd` 上按兩下
 4. 說明畫面中的 `PASS`、`WARN`、`INFO` 與 `UNKNOWN`
 5. 示範如何重新執行檢查
 
@@ -34,7 +34,7 @@
 
 一般使用方式
 
-1. 在 [00_check-environment.cmd](00_check-environment.cmd) 上按兩下
+1. 在 `00_check-environment.cmd` 上按兩下
 2. 等待環境檢查完成
 3. 檢視 `PASS`、`WARN`、`INFO` 與 `UNKNOWN`
 4. 按任意鍵關閉視窗

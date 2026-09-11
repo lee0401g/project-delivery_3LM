@@ -121,7 +121,7 @@ docker compose version
 ### 步驟六 再次執行環境檢查
 
 開啟 [00-課前硬體與環境檢查](../00-課前硬體與環境檢查/) 單元資料夾
-在 [00_check-environment.cmd](../00-課前硬體與環境檢查/00_check-environment.cmd) 上按兩下
+在 `00_check-environment.cmd` 上按兩下
 檢查完成後畫面會保留
 確認 WSL 與 Docker Engine 顯示 `PASS`
 
