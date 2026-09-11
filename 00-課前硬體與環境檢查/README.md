@@ -39,7 +39,12 @@
 3. 檢視 `PASS`、`WARN`、`INFO` 與 `UNKNOWN`
 4. 按任意鍵關閉視窗
 
-若無法直接雙擊 可開啟 CMD / PowerShell 後執行
+若按兩下無法執行
+
+1. 確認檔案總管目前位於 `00-課前硬體與環境檢查` 資料夾
+2. 在資料夾空白處按滑鼠右鍵
+3. 選擇「在終端機中開啟」
+4. 在開啟的 CMD 或 PowerShell 輸入下列指令並按 Enter
 
 ```console
 .\00_check-environment.cmd
