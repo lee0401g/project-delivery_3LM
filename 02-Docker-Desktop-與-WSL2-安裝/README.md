@@ -43,7 +43,7 @@ Windows 11
 3. 重新啟動 Windows
 4. 確認 WSL 版本
 5. 安裝 Docker Desktop
-6. 確認使用 WSL2 backend
+6. 確認使用 WSL2 backend 並關閉登入後自動啟動
 7. 啟動 Docker Desktop
 8. 執行 Docker 測試指令
 9. 再次執行環境檢查腳本
@@ -91,18 +91,23 @@ wsl --version
 
 > 本課程使用 Linux containers，學生不需要為本課程切換到 Windows containers
 
-### 步驟四 確認 WSL2 backend
+### 步驟四 確認 WSL2 backend 與啟動設定
 
 開啟 Docker Desktop
 
 1. 進入 Settings
 2. 選擇 General
 3. 確認 Use the WSL 2 based engine 已啟用
-4. 選擇 Apply 或 Apply and restart
+4. 確認 Start Docker Desktop when you sign in to your computer 未勾選
+5. 選擇 Apply 或 Apply and restart
 
 > 若畫面沒有此選項且 Docker 已正常啟動，通常代表系統已自動使用可用的 WSL2 backend
 
+> Docker Desktop 目前預設不會在安裝後或登入 Windows 時自動啟動，若此選項已被勾選，取消勾選即可避免平時占用電腦資源，後續需要使用時再從開始功能表啟動
+
 > Docker 官方說明可參考 [Docker Desktop WSL2 backend](https://docs.docker.com/desktop/features/wsl/)
+
+> 啟動設定可參考 [Docker Desktop Settings](https://docs.docker.com/desktop/settings-and-maintenance/settings/)
 
 ### 步驟五 驗證 Docker Engine
 
