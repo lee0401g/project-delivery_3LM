@@ -156,6 +156,12 @@ wsl --update --web-download
 
 開啟工作管理員並進入效能 CPU，確認虛擬化顯示為已啟用，若未啟用，需由 BIOS 或 UEFI 開啟 Intel Virtualization Technology 或 AMD-V
 
+> **BIOS 或 UEFI**  
+> BIOS 或 UEFI 是主機板中的系統韌體，會在 Windows 啟動前先檢查硬體並提供基本設定，新式電腦大多使用 UEFI，但操作畫面仍常被統稱為 BIOS
+
+> **Intel Virtualization Technology 或 AMD-V**  
+> 兩者分別是 Intel 與 AMD 處理器提供的硬體虛擬化功能，啟用後可讓 WSL2 與 Docker Desktop 在 Windows 中建立執行 Linux 容器所需的虛擬環境
+
 ### Docker Desktop 一直停在 Starting
 
 先重新啟動 Windows，再確認 WSL 是否正常
