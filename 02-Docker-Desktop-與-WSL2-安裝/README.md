@@ -103,8 +103,8 @@ wsl --version
 
 ### 步驟五 驗證 Docker Engine
 
-等待 Docker Desktop 顯示 Engine running
-開啟 CMD 或 PowerShell 後執行
+1. 等待 Docker Desktop 顯示 Engine running
+2. 開啟 CMD 或 PowerShell 後執行
 ```console
 docker version
 ```
@@ -117,10 +117,10 @@ docker compose version
 
 ### 步驟六 再次執行環境檢查
 
-開啟 [00-課前硬體與環境檢查](../00-課前硬體與環境檢查/) 單元資料夾
-在 `00_check-environment.cmd` 上按兩下
-檢查完成後畫面會保留
-確認 WSL 與 Docker Engine 顯示 `PASS`
+1. 開啟 [00-課前硬體與環境檢查](../00-課前硬體與環境檢查/) 單元資料夾
+2. 在 `00_check-environment.cmd` 上按兩下
+3. 檢查完成後畫面會保留
+4. 確認 WSL 與 Docker Engine 顯示 `PASS`
 
 ## 5 成功檢查
 
@@ -177,7 +177,7 @@ wsl --shutdown
 
 ### 電腦沒有系統管理員權限
 
-WSL 首次啟用可能需要系統管理員權限，應由教師或設備管理人員協助，不要嘗試繞過學校管理政策
+WSL 首次啟用可能需要系統管理員權限，應由教師或設備管理人員協助
 
 ### 安裝後磁碟空間快速減少
 
