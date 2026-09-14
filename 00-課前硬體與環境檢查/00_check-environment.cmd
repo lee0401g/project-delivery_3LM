@@ -170,7 +170,7 @@ if ($hypervisor -eq $true) {
 }
 
 $slat = $cpu.SecondLevelAddressTranslationExtensions
-if ($null -eq $slat -and $hypervisor -eq $true) {
+if ($hypervisor -eq $true) {
     Show 'PASS' 'SLAT support' 'Supported | Windows hypervisor detected'
 } elseif ($null -eq $slat) {
     Show 'UNKNOWN' 'SLAT support' 'Unable to read'
