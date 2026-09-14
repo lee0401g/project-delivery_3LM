@@ -1,15 +1,15 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 chcp 65001 >nul
-title Local RAG Environment Check
-set "RAG_REPAIR_SCRIPT=%~f0"
-set "RAG_REPAIR_DIR=%~dp0"
+title Computer Environment Check
+set "ENV_CHECK_SCRIPT=%~f0"
+set "ENV_CHECK_DIR=%~dp0"
 if /i "%~1"=="/repair" goto repair
 
-echo Local RAG Environment Check
+echo Computer Environment Check
 echo This script only reads system information unless you choose repair
 echo.
-powershell.exe -NoLogo -NoProfile -Command "$content=Get-Content -LiteralPath $env:RAG_REPAIR_SCRIPT; $marker=[Array]::IndexOf($content,'# POWERSHELL_CHECK'); if($marker -lt 0){exit 99}; $code=$content[($marker+1)..($content.Length-1)] -join [Environment]::NewLine; Invoke-Command ([ScriptBlock]::Create($code))"
+powershell.exe -NoLogo -NoProfile -Command "$content=Get-Content -LiteralPath $env:ENV_CHECK_SCRIPT; $marker=[Array]::IndexOf($content,'# POWERSHELL_CHECK'); if($marker -lt 0){exit 99}; $code=$content[($marker+1)..($content.Length-1)] -join [Environment]::NewLine; Invoke-Command ([ScriptBlock]::Create($code))"
 set "CHECK_RESULT=!ERRORLEVEL!"
 echo.
 echo Recommended baseline
@@ -27,7 +27,7 @@ echo R = Enable WSL2 features, install WSL, and enable hypervisor startup
 echo X = Close without making changes
 choice /c RX /n /m "Press R to repair or X to close: "
 if errorlevel 2 exit /b
-powershell.exe -NoLogo -NoProfile -Command "$q=[char]34; $a='/d /c '+$q+$q+$env:RAG_REPAIR_SCRIPT+$q+' /repair'+$q; Start-Process -FilePath $env:ComSpec -ArgumentList $a -WorkingDirectory $env:RAG_REPAIR_DIR -Verb RunAs -Wait"
+powershell.exe -NoLogo -NoProfile -Command "$q=[char]34; $a='/d /c '+$q+$q+$env:ENV_CHECK_SCRIPT+$q+' /repair'+$q; Start-Process -FilePath $env:ComSpec -ArgumentList $a -WorkingDirectory $env:ENV_CHECK_DIR -Verb RunAs -Wait"
 if not errorlevel 1 exit /b
 echo.
 echo Repair was not started
@@ -38,7 +38,7 @@ pause >nul
 exit /b
 
 :repair
-title Local RAG WSL2 Repair
+title WSL2 Environment Repair
 fltmc >nul 2>&1
 if not errorlevel 1 goto repair_admin_ready
 echo Administrator permission was not granted
@@ -49,7 +49,7 @@ pause >nul
 exit /b
 
 :repair_admin_ready
-echo Local RAG WSL2 Repair
+echo WSL2 Environment Repair
 echo This action enables required Windows features, installs WSL, and enables hypervisor startup
 echo Internet access may be required for the WSL installation
 echo.
@@ -120,7 +120,9 @@ $os = Get-CimInstance Win32_OperatingSystem
 $computer = Get-CimInstance Win32_ComputerSystem
 $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
 $features = Get-CimInstance Win32_OptionalFeature
-$hypervisor = $computer.HypervisorPresent
+$hypervisorValue = $computer.HypervisorPresent
+$hypervisorKnown = $null -ne $hypervisorValue
+$hypervisorRunning = [string]$hypervisorValue -eq 'True'
 
 $build = [Environment]::OSVersion.Version.Build
 $arch = if ($os.OSArchitecture) {
@@ -159,7 +161,7 @@ $value = if ($null -eq $free) { 'Unable to read' } else { $free.ToString() + ' G
 Show $status 'Free disk on system drive' $value
 
 $virtFirmware = $cpu.VirtualizationFirmwareEnabled
-if ($hypervisor -eq $true) {
+if ($hypervisorRunning) {
     Show 'PASS' 'Firmware virtualization' 'Enabled | Windows hypervisor detected'
 } elseif ($null -eq $virtFirmware) {
     Show 'UNKNOWN' 'Firmware virtualization' 'Unable to read'
@@ -170,7 +172,7 @@ if ($hypervisor -eq $true) {
 }
 
 $slat = $cpu.SecondLevelAddressTranslationExtensions
-if ($hypervisor -eq $true) {
+if ($hypervisorRunning) {
     Show 'PASS' 'SLAT support' 'Supported | Windows hypervisor detected'
 } elseif ($null -eq $slat) {
     Show 'UNKNOWN' 'SLAT support' 'Unable to read'
@@ -192,10 +194,10 @@ $status = if ($null -eq $wslFeature) { 'UNKNOWN' } elseif ($wslEnabled) { 'PASS'
 $value = if ($null -eq $wslFeature) { 'Unable to read' } elseif ($wslEnabled) { 'Enabled' } else { 'Disabled | repair is available' }
 Show $status 'WSL Windows feature' $value
 
-$status = if ($null -eq $hypervisor) { 'UNKNOWN' } elseif ($hypervisor) { 'PASS' } elseif ($vmpEnabled) { 'WARN' } else { 'INFO' }
-$value = if ($null -eq $hypervisor) {
+$status = if (-not $hypervisorKnown) { 'UNKNOWN' } elseif ($hypervisorRunning) { 'PASS' } elseif ($vmpEnabled) { 'WARN' } else { 'INFO' }
+$value = if (-not $hypervisorKnown) {
     'Unable to read'
-} elseif ($hypervisor) {
+} elseif ($hypervisorRunning) {
     'Running'
 } elseif ($vmpEnabled) {
     'Not running | restart or check boot configuration'
@@ -237,7 +239,7 @@ if ($LASTEXITCODE -eq 0 -and $gpu) {
 $needRepair =
     ($null -ne $vmp -and -not $vmpEnabled) -or
     ($null -ne $wslFeature -and -not $wslEnabled) -or
-    ($vmpEnabled -and $hypervisor -eq $false) -or
+    ($vmpEnabled -and $hypervisorKnown -and -not $hypervisorRunning) -or
     ($null -eq $wslCommand) -or
     ($null -ne $wslCommand -and -not $wslCommandReady)
 
