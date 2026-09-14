@@ -110,8 +110,6 @@ sequenceDiagram
 
 > 帳號只存在本機環境，不會自動建立外部雲端帳號
 
-Open WebUI 官方入門說明可參考 [Quick Start](https://docs.openwebui.com/getting-started/quick-start/)
-
 ### 步驟四 檢視服務狀態
 
 1. 開啟 `03_service-control.cmd`
