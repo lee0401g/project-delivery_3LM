@@ -106,7 +106,7 @@ sequenceDiagram
 2. 設定密碼
 3. 完成登入
 
-> **第一個建立的帳號會成為此 Open WebUI 的管理者，自行保管**
+> **第一個建立的帳號會成為此 Open WebUI 的管理者，重要資訊應謹慎保管**
 
 > 帳號只存在本機環境，不會自動建立外部雲端帳號
 
@@ -133,14 +133,14 @@ docker compose -f 03_compose.yaml ps
 ### 步驟五 停止服務
 
 1. 先關閉進行中的模型回答
-2. 接著開啟 `03_service-control.cmd`
+2. 開啟 `03_service-control.cmd`
 3. 輸入 `3` 並按 Enter
 4. 停止服務後
 
 - 容器停止占用運算資源
 - 聊天與設定仍然保留
 - 已下載模型仍然保留
-- 下次可在 `03_service-control.cmd` 選擇 `1` 再次啟動
+- 下次可依「步驟六 再次啟動」恢復服務
 
 ### 步驟六 再次啟動
 
@@ -170,7 +170,7 @@ docker compose -f 03_compose.yaml ps
 
 ### 顯示 Docker Engine 尚未執行
 
-開啟 Docker Desktop，等待 Engine running 後在 `03_service-control.cmd` 再次選擇 `1`
+開啟 Docker Desktop，等待 Engine running 後，開啟 `03_service-control.cmd`並選擇 `1`
 
 ### 第一次啟動下載很久
 
@@ -182,7 +182,7 @@ docker compose -f 03_compose.yaml ps
 
 ### Open WebUI 顯示無法連接模型服務
 
-在 `03_service-control.cmd` 選擇 `2` 並確認 Ollama 狀態為 Up，若 Ollama 未啟動，可執行
+開啟 `03_service-control.cmd`，選擇 `2` 並確認 Ollama 狀態為 Up，若 Ollama 未啟動，先在包含 `03_compose.yaml` 的教材資料夾開啟終端機，再執行
 
 ```console
 docker compose -f 03_compose.yaml restart ollama
@@ -212,7 +212,7 @@ docker compose -f 03_compose.yaml up -d
 
 ### 關閉腳本控制視窗後服務仍然執行
 
-這是正常情況，容器在背景執行，必須在 `03_service-control.cmd` 選擇 `3` 才會停止
+這是正常情況，容器在背景執行，開啟 `03_service-control.cmd`並選擇 `3` 才會停止
 
 ## 7 單元成果
 
