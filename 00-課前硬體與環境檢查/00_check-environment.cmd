@@ -23,7 +23,7 @@ exit /b
 
 :repair_prompt
 echo Optional repair is available
-echo R = Enable WSL2 features, install WSL, and enable hypervisor startup
+echo R = Enable WSL2 features and install WSL without Ubuntu
 echo X = Close without making changes
 choice /c RX /n /m "Press R to repair or X to close: "
 if errorlevel 2 exit /b
@@ -51,6 +51,7 @@ exit /b
 :repair_admin_ready
 echo WSL2 Environment Repair
 echo This action enables required Windows features, installs WSL, and enables hypervisor startup
+echo Ubuntu and other Linux distributions will not be installed
 echo Internet access may be required for the WSL installation
 echo.
 set "REPAIR_FAILED=0"
@@ -119,7 +120,7 @@ function Show {
 $os = Get-CimInstance Win32_OperatingSystem
 $computer = Get-CimInstance Win32_ComputerSystem
 $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
-$features = Get-CimInstance Win32_OptionalFeature
+$features = Get-CimInstance Win32_OptionalFeature -Filter "Name='VirtualMachinePlatform' OR Name='Microsoft-Windows-Subsystem-Linux'"
 $hypervisorValue = $computer.HypervisorPresent
 $hypervisorKnown = $null -ne $hypervisorValue
 $hypervisorRunning = [string]$hypervisorValue -eq 'True'

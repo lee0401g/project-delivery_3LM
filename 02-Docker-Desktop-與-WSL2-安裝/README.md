@@ -52,11 +52,9 @@ Windows 11
 wsl --install --no-distribution
 ```
 
-若系統顯示不支援 `--no-distribution` 可改為
-```console
-wsl --install
-```
 > --no-distribution：安裝 WSL2 必要功能，但不額外安裝 Ubuntu 等 Linux 發行版
+
+> 若系統顯示不支援 `--no-distribution`，不要改用 `wsl --install`，因為該指令會同時安裝預設的 Ubuntu 發行版，請改用環境檢查腳本的修復功能
 
 指令完成後重新啟動 Windows
 
@@ -136,7 +134,7 @@ docker compose version
 
 ## 6 常見問題與排除
 
-### `wsl --install` 要求重新啟動
+### `wsl --install --no-distribution` 要求重新啟動
 
 這是正常情況，儲存目前工作後重新啟動 Windows 再繼續安裝
 

@@ -56,7 +56,7 @@
 - 按 `R`：要求一次系統管理員權限，啟用 WSL2 必要設定並安裝 WSL
 - 按 `X`：關閉腳本且不修改設定
 
-修復功能會啟用 Virtual Machine Platform、Windows Subsystem for Linux 與 Windows hypervisor 開機啟動設定，並執行 WSL 安裝，過程可能需要網路，完成後由使用者自行儲存工作並重新啟動 Windows
+修復功能會啟用 Virtual Machine Platform、Windows Subsystem for Linux 與 Windows hypervisor 開機啟動設定，並以 `--no-distribution` 安裝 WSL，不會安裝 Ubuntu 或其他 Linux 發行版，過程可能需要網路，完成後由使用者自行儲存工作並重新啟動 Windows
 
 腳本將檢查
 
