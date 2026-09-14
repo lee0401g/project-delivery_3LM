@@ -60,33 +60,28 @@ sequenceDiagram
 
 容器資料儲存在 Docker named volumes，停止或更新容器不會自動刪除聊天、模型與設定
 
-## 3 教師示範
+## 3 要點
 
-1. 確認 Docker Desktop 顯示 Engine running
-2. 開啟教材資料夾並檢視 `03_compose.yaml`
-3. 在 `03_service-control.cmd` 上按兩下，並選擇 `1 Start Ollama and Open WebUI`
-4. 觀察第一次下載容器映像的過程
-5. 開啟 [http://localhost:3000](http://localhost:3000)
-6. 建立第一個 Open WebUI 帳號
-7. 縮小瀏覽器，回到腳本控制視窗，再按任意鍵開啟功能選單
-8. 選擇 `2 View service status` 並確認兩個容器皆為 `Up`
-9. 按任意鍵返回選單並選擇 `3 Stop Ollama and Open WebUI`
-10. 再次選擇 `1 Start Ollama and Open WebUI`
-11. 回到瀏覽器並確認剛才建立的帳號仍然存在
+- 說明 `03_compose.yaml` 記錄服務設定，`03_service-control.cmd` 提供操作選單
+- 利用流程圖說明 Open WebUI 接收操作，Ollama 負責執行模型
+- 引導學生分辨啟動服務、開啟瀏覽器與建立帳號三個不同動作
+- 說明關閉瀏覽器或控制視窗後，容器服務仍可能在背景執行
+- 示範停止再啟動服務後，如何確認帳號與資料仍被保留
+- 提醒第一個 Open WebUI 帳號具有管理權限，應妥善保管登入資料
 
-> 教師說明第一次啟動需要下載映像，所需時間依網路速度而定
-
-## 4 學生實作
+## 4 實作
 
 ### 步驟一 確認檔案
 
 教材資料夾中應包含
+
 ```text
 03-啟動-Ollama-與-Open-WebUI/
 ├─ README.md
 ├─ 03_compose.yaml
 └─ 03_service-control.cmd
 ```
+
 ### 步驟二 啟動服務
 
 1. 先啟動 Docker Desktop
@@ -151,11 +146,12 @@ docker compose -f 03_compose.yaml ps
 
 ### 步驟六 再次啟動
 
-1. 在 `03_service-control.cmd` 上按兩下
-2. 輸入 `1` 並按 Enter
-3. 開啟 [http://localhost:3000](http://localhost:3000)
-4. 使用剛才建立的帳號登入
-5. 確認帳號仍然存在
+1. 啟動 Docker Desktop 並等待 Engine running
+2. 開啟 `03_service-control.cmd`
+3. 輸入 `1` 並按 Enter
+4. 開啟 [http://localhost:3000](http://localhost:3000)
+5. 使用剛才建立的帳號登入
+6. 確認帳號仍然存在
 
 ## 5 成功檢查
 

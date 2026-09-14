@@ -34,23 +34,15 @@ Windows 11
 - 安裝過程可連接網路
 - 可在需要時取得系統管理員權限
 
-## 3 教師示範
+## 3 要點
 
-教師先示範完整流程，學生再依同樣順序操作
+- 說明 WSL2 如何讓 Windows 執行本課程需要的 Linux 容器
+- 說明 Docker Desktop、Docker Engine 與 Linux containers 在本課程中的關係
+- 引導學生理解安裝完成、程式已開啟與 Docker Engine 正常執行是不同狀態
+- 示範如何利用 `docker version` 與 `docker compose version` 判讀安裝結果
+- 說明登入 Windows 後自動啟動的影響，讓學生依使用需求決定是否啟用
 
-1. 以 **系統管理員身分** 開啟 CMD 或 PowerShell
-2. 安裝或更新 WSL
-3. 重新啟動 Windows
-4. 確認 WSL 版本
-5. 安裝 Docker Desktop
-6. 確認使用 WSL2 backend 並關閉登入後自動啟動
-7. 啟動 Docker Desktop
-8. 執行 Docker 測試指令
-9. 再次執行環境檢查腳本
-
-教師提醒學生重新啟動前先儲存其他應用程式中的工作
-
-## 4 學生實作
+## 4 實作
 
 ### 步驟一 安裝 WSL2
 
