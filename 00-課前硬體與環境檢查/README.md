@@ -57,8 +57,11 @@
 - CPU 核心與執行緒
 - 實體記憶體
 - 系統磁碟可用空間
-- 虛擬化狀態
-- WSL 狀態
+- BIOS 或 UEFI 虛擬化狀態
+- SLAT 支援狀態
+- Virtual Machine Platform 狀態
+- WSL Windows 功能與指令狀態
+- Windows hypervisor 執行狀態
 - Docker 狀態
 - NVIDIA GPU 狀態
 
@@ -71,8 +74,9 @@
 - RAM 至少 16 GB
 - 系統磁碟至少 50 GB 可用空間
 - 虛擬化已啟用
+- SLAT 顯示 `PASS`
 
-> WSL2 與 Docker 尚未安裝、GPU 不存在無妨
+> Virtual Machine Platform、WSL、Windows hypervisor 與 Docker 在單元 02 前顯示 `INFO` 無妨
 > 後續單元會教學
 
 ## 6 常見問題與排除
@@ -95,6 +99,14 @@
 需進入 BIOS 或 UEFI 開啟 Intel VT-x Intel Virtualization Technology 或 AMD-V
 
 > 不同品牌操作方式不同
+
+### Virtual Machine Platform 或 WSL Windows 功能顯示 `INFO`
+
+尚未進行單元 02 時屬於正常情況，完成安裝後應顯示 `PASS`
+
+### Windows hypervisor 顯示 `WARN`
+
+代表 Virtual Machine Platform 已啟用，但 Windows hypervisor 沒有正常執行，先重新啟動 Windows，若仍顯示 `WARN`，依單元 02 的虛擬化錯誤說明進行檢查
 
 ### WSL 尚未安裝
 

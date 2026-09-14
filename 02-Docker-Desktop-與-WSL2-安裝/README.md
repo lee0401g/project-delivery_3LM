@@ -120,7 +120,7 @@ docker compose version
 1. 開啟 [00-課前硬體與環境檢查](../00-課前硬體與環境檢查/) 單元資料夾
 2. 在 `00_check-environment.cmd` 上按兩下
 3. 檢查完成後畫面會保留
-4. 確認 WSL 與 Docker Engine 顯示 `PASS`
+4. 確認 Firmware virtualization、SLAT support、Virtual Machine Platform、WSL Windows feature、Windows hypervisor、WSL command 與 Docker Engine 顯示 `PASS`
 
 ## 5 成功檢查
 
@@ -132,7 +132,7 @@ docker compose version
 - Docker Desktop 使用 Linux containers
 - `docker version` 能顯示 Client 與 Server 資訊
 - `docker compose version` 能顯示版本資訊
-- 環境檢查中的 WSL 與 Docker Engine 顯示 `PASS`
+- 環境檢查中的虛擬化、SLAT、Virtual Machine Platform、WSL、Windows hypervisor 與 Docker Engine 顯示 `PASS`
 
 ## 6 常見問題與排除
 
@@ -190,4 +190,4 @@ Docker 映像、容器與模型都會使用磁碟空間，此階段不要任意�
 wsl --version
 docker compose version
 ```
-學生再次執行環境檢查並確認 WSL 與 Docker Engine 顯示 `PASS`
+學生再次執行環境檢查並確認虛擬化、SLAT、Virtual Machine Platform、WSL、Windows hypervisor 與 Docker Engine 顯示 `PASS`
