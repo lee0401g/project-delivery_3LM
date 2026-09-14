@@ -4,7 +4,7 @@
 
 - 學生能確認自己的電腦是否適合執行地端對話模型
 
-> 本單元尚不會安裝軟體或修改系統設定
+> 腳本預設只會讀取系統資訊，只有使用者選擇修復並同意系統管理員權限後才會修改 WSL2 必要設定
 
 ## 2 必要觀念
 
@@ -36,7 +36,7 @@
 1. 在 `00_check-environment.cmd` 上按兩下
 2. 等待環境檢查完成
 3. 檢視 `PASS`、`WARN`、`INFO` 與 `UNKNOWN`
-4. 按任意鍵關閉視窗
+4. 沒有顯示修復選項時按任意鍵關閉視窗
 
 若按兩下無法執行
 
@@ -49,7 +49,14 @@
 .\00_check-environment.cmd
 ```
 
-腳本只會顯示檢查結果，不會建立或修改檔案
+腳本不會建立報告檔，正常檢查不會修改系統設定
+
+若 Virtual Machine Platform、WSL Windows 功能或 Windows hypervisor 尚未就緒，畫面會提供兩個選項
+
+- 按 `R`：要求系統管理員權限並啟用 WSL2 必要設定
+- 按 `X`：關閉腳本且不修改設定
+
+修復功能會啟用 Virtual Machine Platform、Windows Subsystem for Linux 與 Windows hypervisor 開機啟動設定，完成後由使用者自行儲存工作並重新啟動 Windows
 
 腳本將檢查
 
@@ -102,7 +109,7 @@
 
 ### Virtual Machine Platform 或 WSL Windows 功能顯示 `INFO`
 
-尚未進行單元 02 時屬於正常情況，完成安裝後應顯示 `PASS`
+尚未進行單元 02 時屬於正常情況，可按 `X` 關閉腳本，進行單元 02 時可按 `R` 自動啟用必要設定，完成安裝後應顯示 `PASS`
 
 ### Windows hypervisor 顯示 `WARN`
 

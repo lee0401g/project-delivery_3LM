@@ -153,6 +153,18 @@ wsl --update --web-download
 
 開啟工作管理員並進入效能 CPU，確認虛擬化顯示為已啟用，若未啟用，需由 BIOS 或 UEFI 開啟 Intel Virtualization Technology 或 AMD-V
 
+若環境檢查顯示 Virtual Machine Platform、WSL Windows 功能或 Windows hypervisor 尚未就緒，可使用自動修復
+
+1. 開啟 [00-課前硬體與環境檢查](../00-課前硬體與環境檢查/) 單元資料夾
+2. 在 `00_check-environment.cmd` 上按兩下
+3. 按 `R` 啟動修復
+4. 在 Windows 詢問是否允許變更時選擇「是」
+5. 等待修復完成
+6. 儲存其他應用程式中的工作並重新啟動 Windows
+7. 再次執行環境檢查並確認相關項目顯示 `PASS`
+
+> 修復腳本不會自動重新啟動 Windows
+
 > **BIOS 或 UEFI**  
 > BIOS 或 UEFI 是主機板中的系統韌體，會在 Windows 啟動前先檢查硬體並提供基本設定，新式電腦大多使用 UEFI，但操作畫面仍常被統稱為 BIOS
 
