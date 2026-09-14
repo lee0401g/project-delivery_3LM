@@ -53,10 +53,10 @@
 
 若 Virtual Machine Platform、WSL Windows 功能或 Windows hypervisor 尚未就緒，畫面會提供兩個選項
 
-- 按 `R`：要求系統管理員權限並啟用 WSL2 必要設定
+- 按 `R`：要求一次系統管理員權限，啟用 WSL2 必要設定並安裝 WSL
 - 按 `X`：關閉腳本且不修改設定
 
-修復功能會啟用 Virtual Machine Platform、Windows Subsystem for Linux 與 Windows hypervisor 開機啟動設定，完成後由使用者自行儲存工作並重新啟動 Windows
+修復功能會啟用 Virtual Machine Platform、Windows Subsystem for Linux 與 Windows hypervisor 開機啟動設定，並執行 WSL 安裝，過程可能需要網路，完成後由使用者自行儲存工作並重新啟動 Windows
 
 腳本將檢查
 
@@ -83,8 +83,7 @@
 - 虛擬化已啟用
 - SLAT 顯示 `PASS`
 
-> Virtual Machine Platform、WSL、Windows hypervisor 與 Docker 在單元 02 前顯示 `INFO` 無妨
-> 後續單元會教學
+> Virtual Machine Platform、WSL、Windows hypervisor 與 Docker 尚未準備完成時會顯示 `INFO`
 
 ## 6 常見問題與排除
 
@@ -109,19 +108,19 @@
 
 ### Virtual Machine Platform 或 WSL Windows 功能顯示 `INFO`
 
-尚未進行單元 02 時屬於正常情況，可按 `X` 關閉腳本，進行單元 02 時可按 `R` 自動啟用必要設定，完成安裝後應顯示 `PASS`
+按 `R` 可自動啟用必要設定，若暫不處理可以按 `X` 關閉腳本，完成安裝後應顯示 `PASS`
 
 ### Windows hypervisor 顯示 `WARN`
 
-代表 Virtual Machine Platform 已啟用，但 Windows hypervisor 沒有正常執行，先重新啟動 Windows，若仍顯示 `WARN`，依單元 02 的虛擬化錯誤說明進行檢查
+代表 Virtual Machine Platform 已啟用，但 Windows hypervisor 沒有正常執行，先重新啟動 Windows，若仍顯示 `WARN`，再次執行腳本並按 `R` 修復
 
 ### WSL 尚未安裝
 
-此階段只記錄狀態，單元 02 再進行安裝
+腳本會顯示修復選項，按 `R` 可要求系統管理員權限並自動執行 WSL 安裝，也可以按 `X` 暫不處理
 
 ### Docker 尚未安裝
 
-此階段只記錄狀態，單元 02 再進行安裝
+Docker Desktop 尚未安裝時屬於正常情況
 
 ### 找不到 NVIDIA GPU
 
