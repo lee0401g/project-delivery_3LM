@@ -60,6 +60,17 @@ pushd "%SCRIPT_DIR%"
 echo %ESC%[96mLocal AI service status%ESC%[0m
 echo.
 docker compose -f "%COMPOSE_FILE%" ps
+set "WEBUI_CONTAINER="
+set "WEBUI_STATE="
+for /f "delims=" %%I in ('docker compose -f "%COMPOSE_FILE%" ps -q open-webui') do set "WEBUI_CONTAINER=%%I"
+if defined WEBUI_CONTAINER for /f "delims=" %%S in ('docker inspect --format "{{.State.Status}}" "%WEBUI_CONTAINER%" 2^>nul') do set "WEBUI_STATE=%%S"
+if /i "%WEBUI_STATE%"=="restarting" (
+    echo.
+    echo %ESC%[91mOpen WebUI is restarting repeatedly%ESC%[0m
+    echo %ESC%[93mRecent Open WebUI logs%ESC%[0m
+    echo.
+    docker compose -f "%COMPOSE_FILE%" logs --tail 30 open-webui
+)
 popd
 call :wait
 goto menu

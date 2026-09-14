@@ -188,6 +188,27 @@ docker compose -f 03_compose.yaml ps
 docker compose -f 03_compose.yaml restart ollama
 ```
 
+### Open WebUI 狀態持續顯示 Restarting
+
+先在包含 `03_compose.yaml` 的教材資料夾開啟終端機，再執行
+
+```console
+docker compose -f 03_compose.yaml logs --tail 100 open-webui
+```
+
+若紀錄包含 `no such table: config`，代表 Open WebUI 資料庫未正確建立
+
+全新安裝且尚未建立帳號、對話或知識庫時，可確認 `03_compose.yaml` 使用 `ghcr.io/open-webui/open-webui:v0.11.3`，再依序執行
+
+```console
+docker compose -f 03_compose.yaml down
+docker volume rm local-ai_open-webui-data
+docker compose -f 03_compose.yaml pull open-webui
+docker compose -f 03_compose.yaml up -d
+```
+
+> `docker volume rm local-ai_open-webui-data` 會刪除 Open WebUI 帳號、對話、文件與知識庫，僅適用於尚未建立資料的首次安裝，若已有資料應先停止操作並進行備份
+
 ### 忘記本機帳號密碼
 
 若不需要保留原有帳號、對話、設定與知識庫，可以重新建立 Open WebUI
