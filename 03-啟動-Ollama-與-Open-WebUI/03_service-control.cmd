@@ -4,6 +4,7 @@ setlocal
 title Local AI Service Control
 set "SCRIPT_DIR=%~dp0"
 set "COMPOSE_FILE=%SCRIPT_DIR%03_compose.yaml"
+set "WEBUI_URL=http://localhost:3000/"
 set "WEBUI_WAIT_LIMIT=180"
 set "WEBUI_POLL_SECONDS=5"
 set "WEBUI_HTTP_TIMEOUT=2"
@@ -63,8 +64,12 @@ docker compose -f "%COMPOSE_FILE%" ps
 popd
 echo.
 echo %ESC%[92mOpen WebUI is healthy and returned HTTP 200%ESC%[0m
-echo %ESC%[96mOpen WebUI address http://localhost:3000%ESC%[0m
-start "" http://localhost:3000
+echo %ESC%[96mOpening Open WebUI in your default browser%ESC%[0m
+echo %WEBUI_URL%
+powershell -NoProfile -Command "try { Start-Process '%WEBUI_URL%'; exit 0 } catch { exit 1 }" >nul 2>&1
+if errorlevel 1 (
+    echo %ESC%[93mThe browser could not be opened automatically. Click the URL above.%ESC%[0m
+)
 call :wait
 goto menu
 
