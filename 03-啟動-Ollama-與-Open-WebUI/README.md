@@ -94,11 +94,13 @@ sequenceDiagram
 - Ollama container image
 - Open WebUI container image
 
-下載完成且服務啟動後，腳本會自動使用預設瀏覽器開啟 [http://localhost:3000](http://localhost:3000)
+下載完成後，腳本會進入倒數等待。畫面約每 5 秒在同一行更新容器的 `health`、本機網頁的 HTTP 回應值與剩餘時間，上限為 180 秒。
+
+請保持腳本視窗開啟，不要自行連線。只有在容器顯示 `healthy`，且 [http://localhost:3000](http://localhost:3000) 回傳 HTTP 200 後，腳本才會使用預設瀏覽器自動開啟頁面。
 
 > 若瀏覽器沒有自動開啟，請自行開啟瀏覽器並輸入上述網址
 
-> 若太早開啟瀏覽器且顯示無法連線，等待約一分鐘後重新整理
+> 若等待超過 180 秒仍未成功，腳本會顯示目前狀態與最近的 Open WebUI 紀錄。請保留畫面並交由教師協助判讀。
 
 ### 步驟三 建立 Open WebUI 帳號
 
@@ -120,7 +122,9 @@ sequenceDiagram
 | Compose 服務 | 預期狀態 |
 | --- | --- |
 | ollama | Up |
-| open-webui | Up |
+| open-webui | Up（healthy） |
+
+腳本同時會顯示本機網頁的 HTTP 狀態；正常可用時應為 `200`。
 
 也可以在 CMD 或 PowerShell 執行
 
@@ -142,14 +146,19 @@ docker compose -f 03_compose.yaml ps
 - 已下載模型仍然保留
 - 下次可依「步驟六 再次啟動」恢復服務
 
-### 步驟六 再次啟動
+### 步驟六 下次開機再次啟動
 
-1. 啟動 Docker Desktop 並等待 Engine running
-2. 開啟 `03_service-control.cmd`
-3. 輸入 `1` 並按 Enter
-4. 開啟 [http://localhost:3000](http://localhost:3000)
-5. 使用剛才建立的帳號登入
-6. 確認帳號仍然存在
+1. 開機並登入 Windows
+2. 啟動 Docker Desktop，等待左下角顯示 Engine running
+3. 進入 `03-啟動-Ollama-與-Open-WebUI` 資料夾
+4. 按兩下 `03_service-control.cmd`
+5. 輸入 `1` 並按 Enter
+6. 保持腳本視窗開啟，等待健康檢查完成
+7. 腳本自動開啟 [http://localhost:3000](http://localhost:3000) 後，使用原有帳號登入
+
+兩個服務都使用 `restart: unless-stopped`。若上次關機前沒有手動停止服務，Docker Desktop 啟動後，容器可能自行恢復；仍可執行腳本並選擇 `1`，確認服務可用並自動開啟網頁。
+
+若上次曾在控制選單選擇 `3` 停止服務，下次開機必須執行腳本並選擇 `1`，才能重新啟動容器。
 
 ## 5 成功檢查
 
@@ -157,8 +166,8 @@ docker compose -f 03_compose.yaml ps
 
 - Docker Desktop 顯示 Engine running
 - `ollama` 服務狀態為 Up
-- `open-webui` 服務狀態為 Up
-- [http://localhost:3000](http://localhost:3000) 可以開啟
+- `open-webui` 服務狀態為 Up（healthy）
+- [http://localhost:3000](http://localhost:3000) 回傳 HTTP 200 並可以開啟
 - 學生可以登入自己的 Open WebUI 帳號
 - 停止再啟動後帳號資料仍然存在
 

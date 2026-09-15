@@ -4,6 +4,10 @@ setlocal
 title Local AI Service Control
 set "SCRIPT_DIR=%~dp0"
 set "COMPOSE_FILE=%SCRIPT_DIR%03_compose.yaml"
+set "WEBUI_WAIT_LIMIT=180"
+set "WEBUI_POLL_SECONDS=5"
+set "WEBUI_HTTP_TIMEOUT=2"
+set "WEBUI_POLL_DELAY=3"
 for /F "delims=" %%E in ('echo prompt $E^| cmd') do set "ESC=%%E"
 
 :menu
@@ -43,10 +47,22 @@ if errorlevel 1 (
     goto action_failed
 )
 echo.
+call :wait_for_webui
+if errorlevel 1 (
+    echo.
+    echo %ESC%[91mOpen WebUI did not become ready within %WEBUI_WAIT_LIMIT% seconds%ESC%[0m
+    echo %ESC%[93mCurrent service status%ESC%[0m
+    docker compose -f "%COMPOSE_FILE%" ps
+    echo.
+    echo %ESC%[93mRecent Open WebUI logs%ESC%[0m
+    docker compose -f "%COMPOSE_FILE%" logs --tail 30 open-webui
+    popd
+    goto action_failed
+)
 docker compose -f "%COMPOSE_FILE%" ps
 popd
 echo.
-echo %ESC%[92mServices started successfully%ESC%[0m
+echo %ESC%[92mOpen WebUI is healthy and returned HTTP 200%ESC%[0m
 echo %ESC%[96mOpen WebUI address http://localhost:3000%ESC%[0m
 start "" http://localhost:3000
 call :wait
@@ -62,8 +78,15 @@ echo.
 docker compose -f "%COMPOSE_FILE%" ps
 set "WEBUI_CONTAINER="
 set "WEBUI_STATE="
+set "WEBUI_HEALTH="
+set "HTTP_STATUS=0"
 for /f "delims=" %%I in ('docker compose -f "%COMPOSE_FILE%" ps -q open-webui') do set "WEBUI_CONTAINER=%%I"
 if defined WEBUI_CONTAINER for /f "delims=" %%S in ('docker inspect --format "{{.State.Status}}" "%WEBUI_CONTAINER%" 2^>nul') do set "WEBUI_STATE=%%S"
+if defined WEBUI_CONTAINER for /f "delims=" %%H in ('docker inspect --format "{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}" "%WEBUI_CONTAINER%" 2^>nul') do set "WEBUI_HEALTH=%%H"
+for /f "delims=" %%H in ('powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; try { [int](Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:3000/' -TimeoutSec %WEBUI_HTTP_TIMEOUT%).StatusCode } catch { if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode.value__ } else { 0 } }"') do set "HTTP_STATUS=%%H"
+echo.
+echo %ESC%[96mOpen WebUI health: %WEBUI_HEALTH%%ESC%[0m
+echo %ESC%[96mLocal HTTP status: %HTTP_STATUS%%ESC%[0m
 if /i "%WEBUI_STATE%"=="restarting" (
     echo.
     echo %ESC%[91mOpen WebUI is restarting repeatedly%ESC%[0m
@@ -113,6 +136,30 @@ if errorlevel 1 (
     exit /b 1
 )
 exit /b 0
+
+:wait_for_webui
+set /a "WAIT_REMAINING=%WEBUI_WAIT_LIMIT%"
+echo %ESC%[93mChecking Open WebUI every %WEBUI_POLL_SECONDS% seconds for up to %WEBUI_WAIT_LIMIT% seconds%ESC%[0m
+:wait_for_webui_loop
+set "WEBUI_CONTAINER="
+set "WEBUI_HEALTH=not-found"
+set "HTTP_STATUS=0"
+for /f "delims=" %%I in ('docker compose -f "%COMPOSE_FILE%" ps -q open-webui') do set "WEBUI_CONTAINER=%%I"
+if defined WEBUI_CONTAINER for /f "delims=" %%H in ('docker inspect --format "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}" "%WEBUI_CONTAINER%" 2^>nul') do set "WEBUI_HEALTH=%%H"
+for /f "delims=" %%H in ('powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; try { [int](Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:3000/' -TimeoutSec %WEBUI_HTTP_TIMEOUT%).StatusCode } catch { if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode.value__ } else { 0 } }"') do set "HTTP_STATUS=%%H"
+set /a "WAIT_ELAPSED=%WEBUI_WAIT_LIMIT%-%WAIT_REMAINING%"
+<nul set /p "=%ESC%[2K%ESC%[1Ghealth=%WEBUI_HEALTH%   HTTP=%HTTP_STATUS%   elapsed=%WAIT_ELAPSED%s   remaining=%WAIT_REMAINING%s"
+if /i "%WEBUI_HEALTH%"=="healthy" if "%HTTP_STATUS%"=="200" (
+    echo.
+    exit /b 0
+)
+timeout /t %WEBUI_POLL_DELAY% /nobreak >nul
+set /a "WAIT_REMAINING-=%WEBUI_POLL_SECONDS%"
+if %WAIT_REMAINING% GTR 0 goto wait_for_webui_loop
+set /a "WAIT_ELAPSED=%WEBUI_WAIT_LIMIT%"
+<nul set /p "=%ESC%[2K%ESC%[1Ghealth=%WEBUI_HEALTH%   HTTP=%HTTP_STATUS%   elapsed=%WAIT_ELAPSED%s   remaining=%WAIT_REMAINING%s"
+echo.
+exit /b 1
 
 :wait
 echo.
