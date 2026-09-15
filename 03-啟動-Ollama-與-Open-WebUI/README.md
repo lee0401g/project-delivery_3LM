@@ -94,9 +94,9 @@ sequenceDiagram
 - Ollama container image
 - Open WebUI container image
 
-下載完成後，腳本會進入倒數等待。畫面約每 5 秒在同一行更新容器的 `health`、本機網頁的 HTTP 回應值與剩餘時間，上限為 180 秒。
+下載完成後，腳本會開始檢查服務。畫面約每 5 秒在同一行更新容器的 `health`、本機網頁的 HTTP 回應值與剩餘時間。
 
-請保持腳本視窗開啟，不要自行連線。只有在容器顯示 `healthy`，且 [http://localhost:3000](http://localhost:3000) 回傳 HTTP 200 後，腳本才會使用預設瀏覽器自動開啟頁面。
+請保持腳本視窗開啟，不要自行連線。一旦容器顯示 `healthy`，且 [http://localhost:3000](http://localhost:3000) 回傳 HTTP 200，腳本就會立即停止等待，並使用預設瀏覽器自動開啟頁面。180 秒只是服務始終未就緒時的逾時上限，不是固定等待時間。
 
 > 若瀏覽器沒有自動開啟，請自行開啟瀏覽器並輸入上述網址
 

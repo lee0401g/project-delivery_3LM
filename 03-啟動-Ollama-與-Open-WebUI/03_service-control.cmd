@@ -139,7 +139,9 @@ exit /b 0
 
 :wait_for_webui
 set /a "WAIT_REMAINING=%WEBUI_WAIT_LIMIT%"
-echo %ESC%[93mChecking Open WebUI every %WEBUI_POLL_SECONDS% seconds for up to %WEBUI_WAIT_LIMIT% seconds%ESC%[0m
+echo %ESC%[93mChecking Open WebUI every %WEBUI_POLL_SECONDS% seconds%ESC%[0m
+echo %ESC%[93mThe browser opens immediately when health=healthy and HTTP=200%ESC%[0m
+echo %ESC%[90m%WEBUI_WAIT_LIMIT% seconds is the timeout limit, not a fixed wait%ESC%[0m
 :wait_for_webui_loop
 set "WEBUI_CONTAINER="
 set "WEBUI_HEALTH=not-found"
