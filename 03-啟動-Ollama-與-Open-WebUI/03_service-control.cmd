@@ -1,179 +1,193 @@
 @echo off
-chcp 65001 >nul
-setlocal
-title Local AI Service Control
-set "SCRIPT_DIR=%~dp0"
-set "COMPOSE_FILE=%SCRIPT_DIR%03_compose.yaml"
-set "WEBUI_URL=http://localhost:3000/"
-set "WEBUI_WAIT_LIMIT=180"
-set "WEBUI_POLL_SECONDS=5"
-set "WEBUI_HTTP_TIMEOUT=2"
-set "WEBUI_POLL_DELAY=3"
-for /F "delims=" %%E in ('echo prompt $E^| cmd') do set "ESC=%%E"
+setlocal DisableDelayedExpansion
+set "LOCAL_AI_SCRIPT=%~f0"
+"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -Command "$text=[IO.File]::ReadAllText($env:LOCAL_AI_SCRIPT); & ([scriptblock]::Create(($text -split '\r?\n# POWERSHELL_PAYLOAD\r?\n',2)[1]))"
+if errorlevel 1 pause
+exit /b
+# POWERSHELL_PAYLOAD
+$ErrorActionPreference = 'Stop'
+$script:Version = '2026-09-16-r2'
+$script:Compose = Join-Path (Split-Path $env:LOCAL_AI_SCRIPT) '03_compose.yaml'
+$script:Url = 'http://localhost:3000/'
 
-:menu
-cls
-echo %ESC%[96m========================================%ESC%[0m
-echo %ESC%[96mLocal AI Service Control%ESC%[0m
-echo %ESC%[96m========================================%ESC%[0m
-echo %ESC%[92m1  Start Ollama and Open WebUI%ESC%[0m
-echo %ESC%[96m2  View service status%ESC%[0m
-echo %ESC%[93m3  Stop Ollama and Open WebUI%ESC%[0m
-echo %ESC%[90m0  Exit%ESC%[0m
-echo %ESC%[96m========================================%ESC%[0m
-set "ACTION="
-set /p "ACTION=Select an option: "
-if "%ACTION%"=="1" goto start_services
-if "%ACTION%"=="2" goto show_status
-if "%ACTION%"=="3" goto stop_services
-if "%ACTION%"=="0" goto end
-echo.
-echo %ESC%[91mInvalid option%ESC%[0m
-call :wait
-goto menu
+function Invoke-Docker {
+    param([string[]]$Arguments, [int]$Timeout = 10)
+    # Arguments come from this script, never from menu input.
+    $info = New-Object Diagnostics.ProcessStartInfo
+    $info.FileName = $script:Docker
+    $info.Arguments = (($Arguments | ForEach-Object { '"' + $_ + '"' }) -join ' ')
+    $info.UseShellExecute = $false
+    $info.CreateNoWindow = $true
+    $info.RedirectStandardOutput = $true
+    $info.RedirectStandardError = $true
+    $process = New-Object Diagnostics.Process
+    $process.StartInfo = $info
+    try {
+        [void]$process.Start()
+        $stdout = $process.StandardOutput.ReadToEndAsync()
+        $stderr = $process.StandardError.ReadToEndAsync()
+        if (-not $process.WaitForExit($Timeout * 1000)) {
+            $process.Kill()
+            throw 'Docker command timed out. Check Docker Desktop.'
+        }
+        return [pscustomobject]@{ Code=$process.ExitCode; Out=$stdout.Result; Err=$stderr.Result }
+    } finally { $process.Dispose() }
+}
 
-:start_services
-cls
-call :require_docker
-if errorlevel 1 goto action_failed
-pushd "%SCRIPT_DIR%"
-echo %ESC%[96mStarting Ollama and Open WebUI%ESC%[0m
-echo %ESC%[93mThe first start downloads container images and may take several minutes%ESC%[0m
-echo.
-docker compose -f "%COMPOSE_FILE%" up -d
-if errorlevel 1 (
-    popd
-    echo.
-    echo %ESC%[91mStartup failed%ESC%[0m
-    goto action_failed
-)
-echo.
-call :wait_for_webui
-if errorlevel 1 (
-    echo.
-    echo %ESC%[91mOpen WebUI did not become ready within %WEBUI_WAIT_LIMIT% seconds%ESC%[0m
-    echo %ESC%[93mCurrent service status%ESC%[0m
-    docker compose -f "%COMPOSE_FILE%" ps
-    echo.
-    echo %ESC%[93mRecent Open WebUI logs%ESC%[0m
-    docker compose -f "%COMPOSE_FILE%" logs --tail 30 open-webui
-    popd
-    goto action_failed
-)
-docker compose -f "%COMPOSE_FILE%" ps
-popd
-echo.
-echo %ESC%[92mOpen WebUI is healthy and returned HTTP 200%ESC%[0m
-echo %ESC%[96mOpening Open WebUI in your default browser%ESC%[0m
-echo %WEBUI_URL%
-powershell -NoProfile -Command "try { Start-Process '%WEBUI_URL%'; exit 0 } catch { exit 1 }" >nul 2>&1
-if errorlevel 1 (
-    echo %ESC%[93mThe browser could not be opened automatically. Click the URL above.%ESC%[0m
-)
-call :wait
-goto menu
+function Test-Environment {
+    if (-not (Test-Path -LiteralPath $script:Compose)) { throw '03_compose.yaml is missing. Keep the complete unit 03 folder together.' }
+    $command = Get-Command docker.exe -ErrorAction SilentlyContinue
+    if ($command) { $script:Docker = $command.Source }
+    else {
+        $script:Docker = @(
+            "$env:ProgramFiles\Docker\Docker\resources\bin\docker.exe",
+            "$env:LOCALAPPDATA\Programs\DockerDesktop\resources\bin\docker.exe"
+        ) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    }
+    if (-not $script:Docker) { throw 'Docker CLI was not found. Install Docker Desktop or reopen this window after installation.' }
+    $result = Invoke-Docker @('info','--format','{{.OSType}}')
+    if ($result.Code -ne 0) {
+        throw ('Docker Engine is unavailable. Open Docker Desktop, wait for Engine running, then retry. If Docker is already open, check its error message.' + "`n" + $result.Err)
+    }
+    if ($result.Out.Trim() -ne 'linux') { throw 'Switch Docker Desktop to Linux containers, then retry.' }
+    $result = Invoke-Docker @('compose','version')
+    if ($result.Code -ne 0) { throw 'Docker Compose is unavailable. Repair or update Docker Desktop.' }
+    $result = Invoke-Docker @('compose','-f',$script:Compose,'config','--quiet')
+    if ($result.Code -ne 0) { throw ('Compose configuration is invalid: ' + $result.Err) }
+}
 
-:show_status
-cls
-call :require_docker
-if errorlevel 1 goto action_failed
-pushd "%SCRIPT_DIR%"
-echo %ESC%[96mLocal AI service status%ESC%[0m
-echo.
-docker compose -f "%COMPOSE_FILE%" ps
-set "WEBUI_CONTAINER="
-set "WEBUI_STATE="
-set "WEBUI_HEALTH="
-set "HTTP_STATUS=0"
-for /f "delims=" %%I in ('docker compose -f "%COMPOSE_FILE%" ps -q open-webui') do set "WEBUI_CONTAINER=%%I"
-if defined WEBUI_CONTAINER for /f "delims=" %%S in ('docker inspect --format "{{.State.Status}}" "%WEBUI_CONTAINER%" 2^>nul') do set "WEBUI_STATE=%%S"
-if defined WEBUI_CONTAINER for /f "delims=" %%H in ('docker inspect --format "{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}" "%WEBUI_CONTAINER%" 2^>nul') do set "WEBUI_HEALTH=%%H"
-for /f "delims=" %%H in ('powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; try { [int](Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:3000/' -TimeoutSec %WEBUI_HTTP_TIMEOUT%).StatusCode } catch { if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode.value__ } else { 0 } }"') do set "HTTP_STATUS=%%H"
-echo.
-echo %ESC%[96mOpen WebUI health: %WEBUI_HEALTH%%ESC%[0m
-echo %ESC%[96mLocal HTTP status: %HTTP_STATUS%%ESC%[0m
-if /i "%WEBUI_STATE%"=="restarting" (
-    echo.
-    echo %ESC%[91mOpen WebUI is restarting repeatedly%ESC%[0m
-    echo %ESC%[93mRecent Open WebUI logs%ESC%[0m
-    echo.
-    docker compose -f "%COMPOSE_FILE%" logs --tail 30 open-webui
-)
-popd
-call :wait
-goto menu
+function Get-WebState {
+    param([int]$Timeout = 5)
+    $result = Invoke-Docker @('compose','-f',$script:Compose,'ps','--all','-q','open-webui') $Timeout
+    if ($result.Code -ne 0) { throw ('Cannot query containers. Check Docker Engine. ' + $result.Err) }
+    $id = $result.Out.Trim()
+    if (-not $id) { return [pscustomobject]@{ State='missing'; Health='none' } }
+    $result = Invoke-Docker @('inspect','--format','{{json .State}}',$id) $Timeout
+    if ($result.Code -ne 0) { throw ('Cannot inspect Open WebUI. ' + $result.Err) }
+    $state = $result.Out | ConvertFrom-Json
+    $health = 'none'
+    if ($state.Health) { $health = $state.Health.Status }
+    return [pscustomobject]@{ State=$state.Status; Health=$health }
+}
 
-:stop_services
-cls
-call :require_docker
-if errorlevel 1 goto action_failed
-pushd "%SCRIPT_DIR%"
-echo %ESC%[93mStopping Ollama and Open WebUI%ESC%[0m
-echo.
-docker compose -f "%COMPOSE_FILE%" stop
-if errorlevel 1 (
-    popd
-    echo.
-    echo %ESC%[91mStop failed%ESC%[0m
-    goto action_failed
-)
-popd
-echo.
-echo %ESC%[92mServices stopped and data retained%ESC%[0m
-call :wait
-goto menu
+function Get-HttpStatus {
+    param([int]$TimeoutMs = 2000)
+    $response = $null
+    try {
+        $request = [Net.HttpWebRequest]::Create($script:Url)
+        $request.Proxy = $null
+        $request.Timeout = $TimeoutMs
+        $request.ReadWriteTimeout = $TimeoutMs
+        $request.AllowAutoRedirect = $false
+        $response = $request.GetResponse()
+        return [int]$response.StatusCode
+    } catch [Net.WebException] {
+        $response = $_.Exception.Response
+        if ($response) { return [int]$response.StatusCode }
+        return 0
+    } finally { if ($response) { $response.Close() } }
+}
 
-:action_failed
-call :wait
-goto menu
+function Get-ReadinessDecision {
+    param($State, $Health, [int]$Http)
+    if ($State -in @('missing','exited','dead','removing','paused')) {
+        return 'fatal:Container is missing, stopped or paused. Resolve its state before retrying.'
+    }
+    if ($State -eq 'running' -and $Health -eq 'none') { return 'fatal:Container has no health check. Check the image and Compose configuration.' }
+    if ($State -eq 'running' -and $Health -eq 'healthy' -and $Http -eq 200) { return 'ready' }
+    if ($State -eq 'restarting' -or $Health -eq 'unhealthy') { return 'suspect:Container is restarting or unhealthy.' }
+    if ($Http -ge 300 -and $Http -lt 500) { return 'suspect:Unexpected redirect, authentication or URL response.' }
+    if ($Http -ge 500 -and $Http -notin @(502,503,504)) { return 'suspect:Web service returned an internal error.' }
+    if ($Health -eq 'healthy') { return 'suspect:Container is healthy but the web page is not ready.' }
+    return 'wait'
+}
 
-:require_docker
-docker compose version >nul 2>&1
-if errorlevel 1 (
-    echo %ESC%[91mDocker Compose is unavailable%ESC%[0m
-    echo %ESC%[93mConfirm Docker Desktop is installed%ESC%[0m
-    exit /b 1
-)
-docker info >nul 2>&1
-if errorlevel 1 (
-    echo %ESC%[91mDocker Engine is not running%ESC%[0m
-    echo %ESC%[93mStart Docker Desktop and wait for Engine running%ESC%[0m
-    exit /b 1
-)
-exit /b 0
+function Wait-WebUI {
+    $timer = [Diagnostics.Stopwatch]::StartNew()
+    $suspectSince = $null
+    Write-Host 'Checking about every 5 seconds. Healthy + HTTP 200 opens the browser immediately.' -ForegroundColor Yellow
+    Write-Host '180 seconds is the readiness timeout, not a fixed delay. Download time is separate.'
+    while ($timer.Elapsed.TotalSeconds -lt 180) {
+        $pollStart = $timer.Elapsed.TotalSeconds
+        $remaining = 180 - $pollStart
+        $state = Get-WebState ([int][Math]::Max(1,[Math]::Min(5,[Math]::Floor($remaining / 2))))
+        $remaining = 180 - $timer.Elapsed.TotalSeconds
+        if ($remaining -le 0) { break }
+        $http = 0
+        if ($state.State -eq 'running') { $http = Get-HttpStatus ([int][Math]::Max(1,[Math]::Min(2000,$remaining * 1000))) }
+        Write-Host ('state={0}  health={1}  HTTP={2:000}  elapsed={3}s  remaining={4}s' -f $state.State,$state.Health,$http,[int]$timer.Elapsed.TotalSeconds,[Math]::Max(0,[int](180-$timer.Elapsed.TotalSeconds)))
+        $decision = Get-ReadinessDecision $state.State $state.Health $http
+        if ($decision -eq 'ready') { return }
+        if ($decision.StartsWith('fatal:')) { throw $decision.Substring(6) }
+        if ($decision.StartsWith('suspect:')) {
+            if ($null -eq $suspectSince) { $suspectSince = $timer.Elapsed.TotalSeconds }
+            Write-Host ($decision.Substring(8) + ' Observing for up to 15 seconds.') -ForegroundColor Yellow
+            if ($timer.Elapsed.TotalSeconds - $suspectSince -ge 15) { throw ('Stopped early: ' + $decision.Substring(8)) }
+        } else { $suspectSince = $null }
+        $delay = [Math]::Min(5-($timer.Elapsed.TotalSeconds-$pollStart),180-$timer.Elapsed.TotalSeconds)
+        if ($delay -gt 0) { Start-Sleep -Milliseconds ([int]($delay*1000)) }
+    }
+    throw 'Open WebUI was not ready within 180 seconds. Review its logs and retry.'
+}
 
-:wait_for_webui
-set /a "WAIT_REMAINING=%WEBUI_WAIT_LIMIT%"
-echo %ESC%[93mChecking Open WebUI every %WEBUI_POLL_SECONDS% seconds%ESC%[0m
-echo %ESC%[93mThe browser opens immediately when health=healthy and HTTP=200%ESC%[0m
-echo %ESC%[90m%WEBUI_WAIT_LIMIT% seconds is the timeout limit, not a fixed wait%ESC%[0m
-:wait_for_webui_loop
-set "WEBUI_CONTAINER="
-set "WEBUI_HEALTH=not-found"
-set "HTTP_STATUS=0"
-for /f "delims=" %%I in ('docker compose -f "%COMPOSE_FILE%" ps -q open-webui') do set "WEBUI_CONTAINER=%%I"
-if defined WEBUI_CONTAINER for /f "delims=" %%H in ('docker inspect --format "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}" "%WEBUI_CONTAINER%" 2^>nul') do set "WEBUI_HEALTH=%%H"
-for /f "delims=" %%H in ('powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; try { [int](Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:3000/' -TimeoutSec %WEBUI_HTTP_TIMEOUT%).StatusCode } catch { if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode.value__ } else { 0 } }"') do set "HTTP_STATUS=%%H"
-set /a "WAIT_ELAPSED=%WEBUI_WAIT_LIMIT%-%WAIT_REMAINING%"
-<nul set /p "=%ESC%[2K%ESC%[1Ghealth=%WEBUI_HEALTH%   HTTP=%HTTP_STATUS%   elapsed=%WAIT_ELAPSED%s   remaining=%WAIT_REMAINING%s"
-if /i "%WEBUI_HEALTH%"=="healthy" if "%HTTP_STATUS%"=="200" (
-    echo.
-    exit /b 0
-)
-timeout /t %WEBUI_POLL_DELAY% /nobreak >nul
-set /a "WAIT_REMAINING-=%WEBUI_POLL_SECONDS%"
-if %WAIT_REMAINING% GTR 0 goto wait_for_webui_loop
-set /a "WAIT_ELAPSED=%WEBUI_WAIT_LIMIT%"
-<nul set /p "=%ESC%[2K%ESC%[1Ghealth=%WEBUI_HEALTH%   HTTP=%HTTP_STATUS%   elapsed=%WAIT_ELAPSED%s   remaining=%WAIT_REMAINING%s"
-echo.
-exit /b 1
+function Open-WebUI {
+    Write-Host 'Open WebUI is ready. Opening your default browser.' -ForegroundColor Green
+    Write-Host $script:Url
+    try { Start-Process -FilePath $script:Url -ErrorAction Stop }
+    catch { Write-Host 'Browser launch failed.' -ForegroundColor Yellow }
+    Write-Host 'If no browser appears, copy the URL above into your browser. Some terminals also support Ctrl+click.'
+}
 
-:wait
-echo.
-echo Press any key to return to the menu
-pause >nul
-exit /b 0
+function Show-Diagnostics {
+    try {
+        $result = Invoke-Docker @('compose','-f',$script:Compose,'ps','--all')
+        Write-Host $result.Out
+        $result = Invoke-Docker @('compose','-f',$script:Compose,'logs','--tail','30','open-webui')
+        Write-Host ($result.Out + $result.Err)
+    } catch { Write-Host $_.Exception.Message -ForegroundColor Yellow }
+}
 
-:end
-endlocal
-exit /b 0
+while ($true) {
+    Write-Host "`nLocal AI Service Control - $script:Version" -ForegroundColor Cyan
+    Write-Host "File: $env:LOCAL_AI_SCRIPT"
+    Write-Host '1  Start Ollama and Open WebUI' -ForegroundColor Green
+    Write-Host '2  View service status' -ForegroundColor Cyan
+    Write-Host '3  Stop services and retain data' -ForegroundColor Yellow
+    Write-Host '0  Exit'
+    $action = Read-Host 'Select an option'
+    if ($null -eq $action -or $action -eq '0') { break }
+    if ($action -notin @('1','2','3')) { Write-Host 'Invalid option. Enter 0, 1, 2 or 3.' -ForegroundColor Yellow; continue }
+    $diagnostics = $false
+    try {
+        Test-Environment
+        switch ($action) {
+            '1' {
+                Write-Host 'Starting services. The first image download may take several minutes.' -ForegroundColor Cyan
+                & $script:Docker compose -f $script:Compose up -d
+                if ($LASTEXITCODE -ne 0) { throw 'Compose startup failed. See the error above: check downloads, disk space and port 3000. No browser was opened.' }
+                $diagnostics = $true
+                Wait-WebUI
+                Open-WebUI
+            }
+            '2' {
+                $result = Invoke-Docker @('compose','-f',$script:Compose,'ps','--all')
+                if ($result.Code -ne 0) { throw $result.Err }
+                Write-Host $result.Out
+                $state = Get-WebState
+                $http = 0
+                if ($state.State -eq 'running') { $http = Get-HttpStatus }
+                Write-Host ('state={0} health={1} HTTP={2:000}' -f $state.State,$state.Health,$http)
+                Write-Host $script:Url
+            }
+            '3' {
+                & $script:Docker compose -f $script:Compose stop
+                if ($LASTEXITCODE -ne 0) { throw 'Stop failed. Review the Docker error above.' }
+                Write-Host 'Services are stopped. Models, accounts and chat data are retained.' -ForegroundColor Green
+            }
+        }
+    } catch {
+        Write-Host $_.Exception.Message -ForegroundColor Red
+        if ($diagnostics) { Show-Diagnostics }
+    }
+    [void](Read-Host 'Press Enter to return to the menu')
+}
