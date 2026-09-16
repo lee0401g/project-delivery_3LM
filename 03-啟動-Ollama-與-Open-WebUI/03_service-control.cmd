@@ -6,9 +6,14 @@ if errorlevel 1 pause
 exit /b
 # POWERSHELL_PAYLOAD
 $ErrorActionPreference = 'Stop'
-$script:Version = '2026-09-16-r2'
+$script:Version = '2026-09-16-r3'
 $script:Compose = Join-Path (Split-Path $env:LOCAL_AI_SCRIPT) '03_compose.yaml'
 $script:Url = 'http://localhost:3000/'
+
+function Reset-Screen {
+    # Preserve redirected logs; redraw interactive consoles only.
+    if (-not [Console]::IsOutputRedirected) { Clear-Host }
+}
 
 function Invoke-Docker {
     param([string[]]$Arguments, [int]$Timeout = 10)
@@ -105,8 +110,6 @@ function Get-ReadinessDecision {
 function Wait-WebUI {
     $timer = [Diagnostics.Stopwatch]::StartNew()
     $suspectSince = $null
-    Write-Host 'Checking about every 5 seconds. Healthy + HTTP 200 opens the browser immediately.' -ForegroundColor Yellow
-    Write-Host '180 seconds is the readiness timeout, not a fixed delay. Download time is separate.'
     while ($timer.Elapsed.TotalSeconds -lt 180) {
         $pollStart = $timer.Elapsed.TotalSeconds
         $remaining = 180 - $pollStart
@@ -115,6 +118,11 @@ function Wait-WebUI {
         if ($remaining -le 0) { break }
         $http = 0
         if ($state.State -eq 'running') { $http = Get-HttpStatus ([int][Math]::Max(1,[Math]::Min(2000,$remaining * 1000))) }
+        Reset-Screen
+        Write-Host "Local AI Service Control - $script:Version" -ForegroundColor Cyan
+        Write-Host 'Checking about every 5 seconds. Healthy + HTTP 200 opens the browser immediately.' -ForegroundColor Yellow
+        Write-Host '180 seconds is the readiness timeout, not a fixed delay. Download time is separate.'
+        Write-Host ''
         Write-Host ('state={0}  health={1}  HTTP={2:000}  elapsed={3}s  remaining={4}s' -f $state.State,$state.Health,$http,[int]$timer.Elapsed.TotalSeconds,[Math]::Max(0,[int](180-$timer.Elapsed.TotalSeconds)))
         $decision = Get-ReadinessDecision $state.State $state.Health $http
         if ($decision -eq 'ready') { return }
@@ -133,6 +141,7 @@ function Wait-WebUI {
 function Open-WebUI {
     Write-Host 'Open WebUI is ready. Opening your default browser.' -ForegroundColor Green
     Write-Host $script:Url
+    # Windows selects the default HTTP handler; no browser executable is specified.
     try { Start-Process -FilePath $script:Url -ErrorAction Stop }
     catch { Write-Host 'Browser launch failed.' -ForegroundColor Yellow }
     Write-Host 'If no browser appears, copy the URL above into your browser. Some terminals also support Ctrl+click.'
@@ -148,6 +157,7 @@ function Show-Diagnostics {
 }
 
 while ($true) {
+    Reset-Screen
     Write-Host "`nLocal AI Service Control - $script:Version" -ForegroundColor Cyan
     Write-Host "File: $env:LOCAL_AI_SCRIPT"
     Write-Host '1  Start Ollama and Open WebUI' -ForegroundColor Green
@@ -156,7 +166,12 @@ while ($true) {
     Write-Host '0  Exit'
     $action = Read-Host 'Select an option'
     if ($null -eq $action -or $action -eq '0') { break }
-    if ($action -notin @('1','2','3')) { Write-Host 'Invalid option. Enter 0, 1, 2 or 3.' -ForegroundColor Yellow; continue }
+    if ($action -notin @('1','2','3')) {
+        Write-Host 'Invalid option. Enter 0, 1, 2 or 3.' -ForegroundColor Yellow
+        [void](Read-Host 'Press Enter to return to the menu')
+        continue
+    }
+    Reset-Screen
     $diagnostics = $false
     try {
         Test-Environment
