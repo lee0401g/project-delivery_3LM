@@ -6,9 +6,13 @@ if errorlevel 1 pause
 exit /b
 # POWERSHELL_PAYLOAD
 $ErrorActionPreference = 'Stop'
-$script:Version = '2026-09-16-r3'
+$script:Version = '2026-09-16-r4'
 $script:Compose = Join-Path (Split-Path $env:LOCAL_AI_SCRIPT) '03_compose.yaml'
 $script:Url = 'http://localhost:3000/'
+$script:ProbeUrl = 'http://127.0.0.1:3000/'
+$script:HttpReason = 'NotChecked'
+$script:HttpDetail = ''
+$script:History = New-Object 'System.Collections.Generic.List[string]'
 
 function Reset-Screen {
     # Preserve redirected logs; redraw interactive consoles only.
@@ -31,7 +35,13 @@ function Invoke-Docker {
         [void]$process.Start()
         $stdout = $process.StandardOutput.ReadToEndAsync()
         $stderr = $process.StandardError.ReadToEndAsync()
-        if (-not $process.WaitForExit($Timeout * 1000)) {
+        if ($Timeout -eq 0) {
+            $clock = [Diagnostics.Stopwatch]::StartNew()
+            while (-not $process.WaitForExit(5000)) {
+                Write-Host ("`rDocker operation in progress: {0}s   " -f [int]$clock.Elapsed.TotalSeconds) -NoNewline
+            }
+            Write-Host ''
+        } elseif (-not $process.WaitForExit($Timeout * 1000)) {
             $process.Kill()
             throw 'Docker command timed out. Check Docker Desktop.'
         }
@@ -76,21 +86,36 @@ function Get-WebState {
 }
 
 function Get-HttpStatus {
-    param([int]$TimeoutMs = 2000)
+    param([int]$TimeoutMs = 5000)
+    $script:HttpReason = ''
+    $script:HttpDetail = ''
     $response = $null
     try {
-        $request = [Net.HttpWebRequest]::Create($script:Url)
+        $request = [Net.HttpWebRequest]::Create($script:ProbeUrl)
         $request.Proxy = $null
         $request.Timeout = $TimeoutMs
         $request.ReadWriteTimeout = $TimeoutMs
         $request.AllowAutoRedirect = $false
         $response = $request.GetResponse()
         return [int]$response.StatusCode
-    } catch [Net.WebException] {
-        $response = $_.Exception.Response
-        if ($response) { return [int]$response.StatusCode }
+    } catch {
+        $failure = $_.Exception
+        while ($failure.InnerException -and $failure -isnot [Net.WebException]) { $failure = $failure.InnerException }
+        $script:HttpReason = $failure.GetType().Name
+        $script:HttpDetail = $_.Exception.ToString()
+        if ($failure -is [Net.WebException]) {
+            $script:HttpReason = [string]$failure.Status
+            $response = $failure.Response
+            if ($response) { return [int]$response.StatusCode }
+        }
         return 0
     } finally { if ($response) { $response.Close() } }
+}
+
+function Format-HttpStatus {
+    param([int]$Status)
+    if ($Status -eq 0) { return "N/A ($script:HttpReason)" }
+    return [string]$Status
 }
 
 function Get-ReadinessDecision {
@@ -103,7 +128,7 @@ function Get-ReadinessDecision {
     if ($State -eq 'restarting' -or $Health -eq 'unhealthy') { return 'suspect:Container is restarting or unhealthy.' }
     if ($Http -ge 300 -and $Http -lt 500) { return 'suspect:Unexpected redirect, authentication or URL response.' }
     if ($Http -ge 500 -and $Http -notin @(502,503,504)) { return 'suspect:Web service returned an internal error.' }
-    if ($Health -eq 'healthy') { return 'suspect:Container is healthy but the web page is not ready.' }
+    if ($Health -eq 'healthy') { return 'suspect:Container is healthy; this script could not confirm the web connection.' }
     return 'wait'
 }
 
@@ -117,13 +142,19 @@ function Wait-WebUI {
         $remaining = 180 - $timer.Elapsed.TotalSeconds
         if ($remaining -le 0) { break }
         $http = 0
-        if ($state.State -eq 'running') { $http = Get-HttpStatus ([int][Math]::Max(1,[Math]::Min(2000,$remaining * 1000))) }
+        $script:HttpReason = 'NotChecked'
+        $script:HttpDetail = ''
+        if ($state.State -eq 'running') { $http = Get-HttpStatus ([int][Math]::Max(1,[Math]::Min(5000,$remaining * 1000))) }
         Reset-Screen
         Write-Host "Local AI Service Control - $script:Version" -ForegroundColor Cyan
         Write-Host 'Checking about every 5 seconds. Healthy + HTTP 200 opens the browser immediately.' -ForegroundColor Yellow
         Write-Host '180 seconds is the readiness timeout, not a fixed delay. Download time is separate.'
         Write-Host ''
-        Write-Host ('state={0}  health={1}  HTTP={2:000}  elapsed={3}s  remaining={4}s' -f $state.State,$state.Health,$http,[int]$timer.Elapsed.TotalSeconds,[Math]::Max(0,[int](180-$timer.Elapsed.TotalSeconds)))
+        $line = ('state={0}  health={1}  HTTP={2}  elapsed={3}s  remaining={4}s' -f $state.State,$state.Health,(Format-HttpStatus $http),[int]$timer.Elapsed.TotalSeconds,[Math]::Max(0,[int](180-$timer.Elapsed.TotalSeconds)))
+        Write-Host $line
+        Write-Host "Probe: $script:ProbeUrl"
+        Write-Host "Manual browser URL: $script:Url"
+        $script:History.Add(('[' + (Get-Date -Format o) + '] ' + $line + ' ' + $script:HttpDetail))
         $decision = Get-ReadinessDecision $state.State $state.Health $http
         if ($decision -eq 'ready') { return }
         if ($decision.StartsWith('fatal:')) { throw $decision.Substring(6) }
@@ -143,17 +174,37 @@ function Open-WebUI {
     Write-Host $script:Url
     # Windows selects the default HTTP handler; no browser executable is specified.
     try { Start-Process -FilePath $script:Url -ErrorAction Stop }
-    catch { Write-Host 'Browser launch failed.' -ForegroundColor Yellow }
+    catch { Write-Host 'Browser launch failed. Use the URL below.' -ForegroundColor Yellow; Save-ErrorLog $_ $false }
     Write-Host 'If no browser appears, copy the URL above into your browser. Some terminals also support Ctrl+click.'
 }
 
-function Show-Diagnostics {
-    try {
-        $result = Invoke-Docker @('compose','-f',$script:Compose,'ps','--all')
-        Write-Host $result.Out
-        $result = Invoke-Docker @('compose','-f',$script:Compose,'logs','--tail','30','open-webui')
-        Write-Host ($result.Out + $result.Err)
-    } catch { Write-Host $_.Exception.Message -ForegroundColor Yellow }
+function Save-ErrorLog {
+    param($Failure, [bool]$IncludeDocker = $true)
+    $parts = New-Object 'System.Collections.Generic.List[string]'
+    $parts.Add("Time: $(Get-Date -Format o)`r`nVersion: $script:Version`r`nScript: $env:LOCAL_AI_SCRIPT`r`nProbe: $script:ProbeUrl`r`nBrowser URL: $script:Url")
+    $parts.Add(($Failure | Out-String))
+    if ($Failure.Exception) { $parts.Add($Failure.Exception.ToString()) }
+    $parts.Add("HTTP reason: $script:HttpReason`r`nHTTP detail: $script:HttpDetail")
+    $parts.Add(($script:History -join "`r`n"))
+    if ($IncludeDocker -and $script:Docker -and (Test-Path -LiteralPath $script:Compose)) {
+        foreach ($argsList in @(@('compose','-f',$script:Compose,'ps','--all'), @('compose','-f',$script:Compose,'logs','--tail','30','open-webui'))) {
+            try {
+                $result = Invoke-Docker $argsList
+                $parts.Add(($argsList -join ' ') + "`r`n" + $result.Out + $result.Err)
+            } catch { $parts.Add($_.Exception.ToString()) }
+        }
+    }
+    $name = 'error-' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + [guid]::NewGuid().ToString('N').Substring(0,8) + '.txt'
+    foreach ($folder in @((Join-Path (Split-Path $env:LOCAL_AI_SCRIPT) 'logs'), (Join-Path ([IO.Path]::GetTempPath()) 'LocalAI-ServiceControl'))) {
+        try {
+            [void][IO.Directory]::CreateDirectory($folder)
+            $path = Join-Path $folder $name
+            [IO.File]::WriteAllText($path,($parts -join "`r`n`r`n"),[Text.UTF8Encoding]::new($true))
+            Write-Host "Error report: $path" -ForegroundColor Yellow
+            return
+        } catch { $writeFailure = $_.Exception.Message }
+    }
+    Write-Host "Could not save the error report: $writeFailure" -ForegroundColor Red
 }
 
 while ($true) {
@@ -173,13 +224,17 @@ while ($true) {
     }
     Reset-Screen
     $diagnostics = $false
+    $script:History.Clear()
+    $script:HttpReason = 'NotChecked'
+    $script:HttpDetail = ''
     try {
         Test-Environment
         switch ($action) {
             '1' {
                 Write-Host 'Starting services. The first image download may take several minutes.' -ForegroundColor Cyan
-                & $script:Docker compose -f $script:Compose up -d
-                if ($LASTEXITCODE -ne 0) { throw 'Compose startup failed. See the error above: check downloads, disk space and port 3000. No browser was opened.' }
+                $result = Invoke-Docker @('compose','-f',$script:Compose,'up','-d') 0
+                $script:History.Add("Compose up:`r`n" + $result.Out + $result.Err)
+                if ($result.Code -ne 0) { throw 'Compose startup failed. See the TXT report for download, disk or port errors.' }
                 $diagnostics = $true
                 Wait-WebUI
                 Open-WebUI
@@ -191,18 +246,21 @@ while ($true) {
                 $state = Get-WebState
                 $http = 0
                 if ($state.State -eq 'running') { $http = Get-HttpStatus }
-                Write-Host ('state={0} health={1} HTTP={2:000}' -f $state.State,$state.Health,$http)
+                Write-Host ('state={0} health={1} HTTP={2}' -f $state.State,$state.Health,(Format-HttpStatus $http))
                 Write-Host $script:Url
+                if ($http -ne 200 -or $state.Health -ne 'healthy') { Save-ErrorLog "Status check: state=$($state.State) health=$($state.Health) HTTP=$(Format-HttpStatus $http)" }
             }
             '3' {
-                & $script:Docker compose -f $script:Compose stop
-                if ($LASTEXITCODE -ne 0) { throw 'Stop failed. Review the Docker error above.' }
+                $result = Invoke-Docker @('compose','-f',$script:Compose,'stop') 0
+                $script:History.Add("Compose stop:`r`n" + $result.Out + $result.Err)
+                if ($result.Code -ne 0) { throw 'Stop failed. Review the TXT error report.' }
                 Write-Host 'Services are stopped. Models, accounts and chat data are retained.' -ForegroundColor Green
             }
         }
     } catch {
-        Write-Host $_.Exception.Message -ForegroundColor Red
-        if ($diagnostics) { Show-Diagnostics }
+        Write-Host (($_.Exception.Message -split "`r?`n",2)[0]) -ForegroundColor Red
+        Write-Host "Manual browser URL: $script:Url"
+        Save-ErrorLog $_
     }
     [void](Read-Host 'Press Enter to return to the menu')
 }
