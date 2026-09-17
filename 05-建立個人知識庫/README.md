@@ -99,33 +99,29 @@ flowchart TD
 
 ### 步驟三 下載索引模型
 
-1. 開啟管理員設定
-2. 進入 Connections
-3. 找到 Ollama 連線並選擇管理模型
+1. 開啟 "設定" > "模型" > "動作" > "管理" > "從 Ollama 下載模型"
 4. 輸入 `embeddinggemma:300m-qat-q4_0`
 5. 開始下載並等待完成
-6. 進入管理員設定中的 Models
-7. 找到 `embeddinggemma:300m-qat-q4_0`
-8. 開啟模型選單並選擇 Hide
+6. 至模型選單，點筆開選單並選擇 **隱藏模型**
 
-> 此模型只用於文件索引，設為 Hide 後不會出現在新對話的模型選單中，但仍可供 RAG 使用
+> 此模型只用於文件索引，設為 隱藏模型 後不會出現在新對話的模型選單中，但仍可供 RAG 使用
 
 > 選擇 Disable 或 Delete 可能使文件索引無法使用
 
 ### 步驟四 確認文件索引設定
 
-1. 開啟管理員設定中的 Documents
-2. 確認 Embedding Model Engine 為 `Ollama`
-3. 確認 Embedding Model 為 `embeddinggemma:300m-qat-q4_0`
+1. 開啟管理員設定中的 "文件"
+2. 確認 "嵌入模型引擎" 為 `Ollama`
+3. 確認 "嵌入模型" 為 `embeddinggemma:300m-qat-q4_0`
 4. 若修改了設定，儲存後再開始上傳文件
 
 文件建立索引後不要任意更換索引模型，更換後必須重新建立既有文件的索引
 
 ### 步驟五 建立知識庫
 
-1. 從側邊欄開啟 Workspace
-2. 選擇 Knowledge
-3. 選擇 Create
+1. 從側邊欄開啟 "工作區"
+2. 選擇 "知識庫"
+3. 選擇 "建立"
 4. 輸入容易辨識的知識庫名稱
 5. 在說明欄填寫主題、資料範圍與用途
 6. 完成建立並進入知識庫
@@ -158,7 +154,7 @@ flowchart TD
 
 - `embeddinggemma:300m-qat-q4_0` 已完成下載
 - `embeddinggemma:300m-qat-q4_0` 已設為 Hide 且不會出現在新對話的模型選單中
-- Embedding Model Engine 為 Ollama
+- "嵌入模型引擎" 為 Ollama
 - 已建立一個主題明確的知識庫
 - 知識庫中包含兩至五份本機文件
 - 每份文件都已完成處理且沒有錯誤
@@ -166,9 +162,9 @@ flowchart TD
 
 ## 6 常見問題與排除
 
-### 找不到 Workspace 或 Knowledge
+### 找不到 "工作區" 或 "知識庫"
 
-確認已登入 Open WebUI，若側邊欄收合，先展開側邊欄再尋找 Workspace
+確認已登入 Open WebUI，若側邊欄收合，先展開側邊欄再尋找 "工作區"
 
 ### 索引模型下載失敗
 
@@ -184,7 +180,7 @@ flowchart TD
 
 ### 已修改索引模型
 
-進入管理員設定中的 Documents，確認目前模型後執行 Reindex，讓知識庫內的既有文件使用相同模型重新建立索引
+進入管理員設定中的 "文件"，確認目前模型後執行 Reindex，讓知識庫內的既有文件使用相同模型重新建立索引
 
 ### 同一份文件出現多次
 
