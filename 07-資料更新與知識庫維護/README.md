@@ -67,11 +67,11 @@ flowchart TD
 
 ## 3 要點
 
-- 說明修改本機文件不會自動更新已上傳的知識庫文件
-- 比較新增、替換、重新命名、刪除與重新建立索引的用途
+- 修改本機文件不會自動更新已上傳的知識庫文件
+- 新增、替換、重新命名、刪除與重新建立索引各有不同用途
 - 更新文件時先確認新版可用，再移除舊版
 - 移除舊版後建立新對話，避免舊對話內容影響查核
-- 利用版本化檔名與維護紀錄保留更新依據
+- 使用版本化檔名與維護紀錄保留更新依據
 - 文件來源、可信度或有效日期改變時，應重新判斷是否適合留在知識庫
 
 ## 4 實作
@@ -83,8 +83,8 @@ flowchart TD
 3. 選擇 `1 Start Ollama and Open WebUI`
 4. 開啟 [http://localhost:3000](http://localhost:3000)
 5. 登入自己的本機帳號
-6. 從側邊欄開啟 Workspace
-7. 選擇 Knowledge 並進入第 05 單元建立的知識庫
+6. 從側邊欄開啟 "工作區（Workspace）"
+7. 選擇 "知識庫（Knowledge）" 並進入第 05 單元建立的知識庫
 8. 記錄目前的文件名稱與版本
 
 ### 步驟二 準備新版文件
@@ -132,16 +132,16 @@ flowchart TD
 ### 步驟五 移除舊版文件
 
 1. 選擇左下角的帳號名稱或頭像
-2. 開啟 Settings
-3. 進入 Data Controls
-4. 在 Manage Files 選擇 Manage
+2. 開啟 "設定（Settings）"
+3. 進入 "資料控制（Data Controls）"
+4. 在 "管理檔案（Manage Files）" 選擇 "管理（Manage）"
 5. 依檔名找到舊版文件
 6. 再次核對新舊版本，確認選取的是舊版
 7. 刪除舊版文件並確認操作
-8. 返回 Workspace 與 Knowledge
+8. 返回 "工作區" 與 "知識庫"
 9. 開啟原有知識庫，確認舊版已移除且新版仍然存在
 
-> 從 Manage Files 刪除文件時，Open WebUI 會一併清除該文件在知識庫中的項目與索引資料，不會刪除 Windows 資料夾中的本機原始檔
+> 從 "管理檔案" 刪除文件時，Open WebUI 會一併清除該文件在知識庫中的項目與索引資料，不會刪除 Windows 資料夾中的本機原始檔
 
 ### 步驟六 從知識庫再次查核
 
@@ -179,7 +179,7 @@ flowchart TD
 
 ### 上傳新版後同時引用新舊版本
 
-確認新版內容與來源正確後，從 Settings、Data Controls、Manage Files 移除舊版，再建立新對話重新測試
+確認新版內容與來源正確後，從 "設定" > "資料控制" > "管理檔案" 移除舊版，再建立新對話重新測試
 
 ### 刪除後仍在回答中看到舊內容
 
@@ -187,17 +187,17 @@ flowchart TD
 
 ### 新版文件已上傳但找不到新增內容
 
-確認文件已完成處理、問題使用文件中的明確詞語且來源選擇正確，仍無法檢索時可由管理員設定中的 Documents 執行 Reindex
+確認文件已完成處理、問題使用文件中的明確詞語且來源選擇正確，仍無法檢索時可由管理員設定中的 "文件（Documents）" 執行 "重新建立索引（Reindex）"
 
-> Reindex 會處理全部知識庫文件並需要等待，本機文件內容改變時仍必須重新上傳，不能以 Reindex 取代
+> "重新建立索引" 會處理全部知識庫文件並需要等待，本機文件內容改變時仍必須重新上傳，不能以此取代
 
 ### 誤刪仍需要的知識庫文件
 
 從保留的本機原始檔重新上傳並等待處理完成，再建立新對話查核內容與來源
 
-### 找不到 Manage Files
+### 找不到 "管理檔案"
 
-選擇左下角的帳號名稱或頭像，進入 Settings 與 Data Controls，再尋找 Manage Files
+選擇左下角的帳號名稱或頭像，進入 "設定" > "資料控制"，再尋找 "管理檔案"
 
 ## 7 單元成果
 
@@ -208,3 +208,8 @@ flowchart TD
 - [Open WebUI Knowledge](https://docs.openwebui.com/features/workspace/knowledge/)
 - [Open WebUI RAG](https://docs.openwebui.com/features/chat-conversations/rag/)
 - [Open WebUI File Management](https://docs.openwebui.com/features/chat-conversations/data-controls/files/)
+
+## 單元導引
+
+- 上一單元：[單元 06 文件問答與引用查核](../06-文件問答與引用查核/README.md)
+- 下一單元：[單元 08 備份、還原、停止與移除](../08-備份還原停止與移除/README.md)
