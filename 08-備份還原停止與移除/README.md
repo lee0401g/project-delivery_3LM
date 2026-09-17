@@ -61,8 +61,8 @@ Documents\Local-AI-Backups
 
 ## 3 要點
 
-- 說明停止服務不等於刪除資料
-- 利用資料卷名稱辨認 Open WebUI 資料與 Ollama 模型資料
+- 停止服務不等於刪除資料
+- 可從資料卷名稱辨認 Open WebUI 資料與 Ollama 模型資料
 - 備份前先停止服務，避免資料仍在寫入
 - 備份完成後確認 `webui.db` 與備份說明檔存在
 - 還原前再次確認目前資料將被備份內容取代
@@ -222,3 +222,8 @@ Documents\Local-AI-Backups
 - [Docker Desktop Backup and Restore](https://docs.docker.com/desktop/settings-and-maintenance/backup-and-restore/)
 - [Open WebUI Backups](https://docs.openwebui.com/tutorials/maintenance/backups/)
 - [Open WebUI Updating and Backup](https://docs.openwebui.com/getting-started/updating/)
+
+## 單元導引
+
+- 上一單元：[單元 07 資料更新與知識庫維護](../07-資料更新與知識庫維護/README.md)
+- 下一單元：[單元 09 個人 RAG 成果驗收](../09-個人-RAG-成果驗收/README.md)

@@ -1,257 +1,162 @@
 # 單元 03 啟動 Ollama 與 Open WebUI
 
+本單元會啟動本機 AI，開啟聊天網頁並建立帳號
+
 ## 1 教學目標
 
-- 學生能使用 Docker Compose 啟動 Ollama 與 Open WebUI
-- 學生能開啟本機 Web 介面並建立第一個管理帳號
-- 學生能檢視服務狀態並安全停止服務
+- 學生能使用服務控制程式啟動 Ollama 與 Open WebUI
+- 學生能開啟本機聊天網頁並建立或登入帳號
+- 學生能查看服務狀態、停止服務並保留帳號與資料
 
 ## 2 必要觀念
 
-本單元會啟動兩個容器
+### 這個單元會用到什麼
 
-| 容器 | 角色 |
+| 名稱 | 用途 |
 | --- | --- |
-| Ollama | 管理並執行後續選擇的本機模型 |
-| Open WebUI | 提供聊天、模型選擇與知識庫操作畫面 |
+| Docker Desktop | 提供本機 AI 所需的執行環境，使用期間請保持開啟 |
+| Ollama | 負責執行 AI 模型，由服務控制程式啟動 |
+| Open WebUI | 在瀏覽器中使用的聊天畫面 |
 
-### 容器與設定檔
+這個單元先完成啟動與帳號設定，對話模型在單元 04 安裝
 
-兩個容器的名稱、連線方式、資料儲存位置與啟動條件都記錄在 `03_compose.yaml`
-Docker Compose 會讀取這份設定檔並統一管理 Ollama 與 Open WebUI
-
-> 本單元尚未指定或下載對話模型
-
-### 服務控制選單
-
-本課程提供的服務控制程式為 `03_service-control.cmd`
-開啟腳本後即可從選單啟動服務、檢視狀態或停止服務
-為了讓執行結果更容易辨認，控制選單使用顏色區分功能與狀態
-
-- 綠色表示啟動或執行成功
-- 青色表示狀態與一般資訊
-- 黃色表示停止操作或注意事項
-- 紅色表示錯誤
-
-### 提問與回答流程
-
-```mermaid
-sequenceDiagram
-    actor U as 使用者
-    participant B as 瀏覽器
-    participant W as Open WebUI 容器
-    participant O as Ollama 容器
-    participant M as 本機模型
-    U->>B: 輸入問題
-    B->>W: HTTP 請求 localhost:3000
-    W->>O: 容器內部請求 ollama:11434
-    O->>M: 載入並執行模型
-    M-->>O: 產生模型結果
-    O-->>W: 回傳模型結果
-    W-->>B: 整理並顯示回答
-    B-->>U: 閱讀回答
-```
-
-使用者只需要操作瀏覽器並開啟 [http://localhost:3000](http://localhost:3000)
-
-> Open WebUI 負責接收問題與顯示回答，Ollama 在後端負責執行本機模型
-
-> Open WebUI 只綁定本機位址 `127.0.0.1`，**同網路中的其他電腦無法直接連入**
-
-容器資料儲存在 Docker named volumes，停止或更新容器不會自動刪除聊天、模型與設定
+開始前請先完成 [單元 02 Docker Desktop 與 WSL2 安裝](../02-Docker-Desktop-與-WSL2-安裝/README.md)，並確認 Docker Desktop 顯示 Engine running
 
 ## 3 要點
 
-- 說明 `03_compose.yaml` 記錄服務設定，`03_service-control.cmd` 提供操作選單
-- 利用流程圖說明 Open WebUI 接收操作，Ollama 負責執行模型
-- 引導學生分辨啟動服務、開啟瀏覽器與建立帳號三個不同動作
-- 說明關閉瀏覽器或控制視窗後，容器服務仍可能在背景執行
-- 示範停止再啟動服務後，如何確認帳號與資料仍被保留
-- 提醒第一個 Open WebUI 帳號具有管理權限，應妥善保管登入資料
+- 啟動前先確認 Docker Desktop 顯示 Engine running
+- 第一次啟動可能需要下載檔案，請保持網路與視窗開啟
+-  `03_service-control.cmd` 選 `3` 會停止服務但保留帳號、對話與模型
+-  `03_service-control.cmd` 選 `0` 只會離開控制程式，不會停止服務
 
 ## 4 實作
 
-### 步驟一 確認檔案
+### 步驟一 找到教材資料夾
 
-教材資料夾中應包含
+1. 開啟解壓縮後的教材資料夾
+2. 進入 `03-啟動-Ollama-與-Open-WebUI`
+3. 確認以下檔案都在同一個資料夾
 
-```text
-03-啟動-Ollama-與-Open-WebUI/
-├─ README.md
-├─ 03_compose.yaml
-└─ 03_service-control.cmd
-```
+- `03_service-control.cmd`：按兩下即可開啟操作選單
+- `03_compose.yaml`：保留在原處，不必修改
+- `README.md`：這份操作說明
+- `補充教材-啟動問題排查.md`：供協助排除問題時查閱
 
-### 步驟二 啟動服務
+後續的選項都在 `03_service-control.cmd` 開啟的控制視窗中輸入
 
-1. 先啟動 Docker Desktop
-2. 等待畫面顯示 Engine running
-3. 接著在 `03_service-control.cmd` 上按兩下
+### 步驟二 開啟 Docker Desktop
+
+1. 從桌面或開始功能表開啟 Docker Desktop
+2. 等待左下角顯示 **Engine running**
+3. 保持 Docker Desktop 開啟，回到教材資料夾
+
+### 步驟三 啟動本機 AI
+
+1. 按兩下 `03_service-control.cmd`
+2. 等待控制視窗顯示操作選單
+3. 輸入 `1`，按 Enter
+4. 保持 Docker Desktop 與控制視窗開啟
+5. 等候服務準備完成，不要在下載期間關閉視窗
+
+第一次啟動時：
+
+- 程式需要從網路下載所需檔案，等待時間會比平常久
+- 控制視窗會持續顯示啟動進度，這段時間請保持網路連線
+- 服務準備完成後，系統會自動使用預設瀏覽器開啟 Open WebUI
+
+平常再次啟動時，已下載的檔案會繼續使用，通常不需要重新下載
+
+若服務已準備完成但網頁沒有出現，可手動開啟 [http://localhost:3000/](http://localhost:3000/)
+
+### 步驟四 建立帳號或登入
+
+#### 第一次使用
+
+1. 在歡迎頁按「開始使用」
+2. 填寫名稱、電子郵件格式的帳號及密碼
+3. 按「建立管理員帳號」
+4. 進入 Open WebUI 後，關閉版本介紹視窗
+
+第一個帳號具有管理權限，請記住帳號與密碼
+
+#### 已經建立過帳號
+
+1. 在登入頁輸入原有帳號與密碼
+2. 按登入並等待聊天畫面出現
+
+不必重新建立帳號，也不要使用另一組資料取代原有帳號
+
+模型選單暫時沒有模型是正常情況，請接著操作單元 04
+
+### 步驟五 平常如何使用
+
+#### 啟動服務
+
+1. 開啟 Docker Desktop
+2. 等待 **Engine running**
+3. 按兩下 `03_service-control.cmd`
 4. 輸入 `1` 並按 Enter
+5. 保持視窗開啟，等待 Open WebUI 自動出現在瀏覽器
 
-第一次執行時系統會下載
+#### 查看狀態
 
-- Ollama container image
-- Open WebUI container image
+1. 在控制視窗輸入 `2` 並按 Enter
+2. 查看畫面顯示的 Ollama 與 Open WebUI 狀態
+3. 查看完成後會回到操作選單
 
-下載完成後，腳本會開始檢查服務。互動視窗約每 5 秒重繪固定狀態區域，顯示容器狀態、`health`、HTTP 回應值及實際經過／剩餘時間，不持續堆疊舊狀態。Docker 指令較慢時，更新間隔可能略長。輸出重新導向至檔案時不清屏，以保留紀錄。
+#### 停止服務
 
-請保持腳本視窗開啟，不要自行連線。一旦容器顯示 `healthy`，且 [http://localhost:3000](http://localhost:3000) 回傳 HTTP 200，腳本就會立即停止等待，並使用預設瀏覽器自動開啟頁面。180 秒只是服務始終未就緒時的逾時上限，不是固定等待時間。
+1. 等待目前的模型回答完成
+2. 在控制視窗輸入 `3` 並按 Enter
+3. 等待畫面顯示停止完成
+4. 返回操作選單後再關閉控制視窗
 
-> 若瀏覽器沒有自動開啟，請將 `http://localhost:3000/` 複製到瀏覽器網址列。部分終端也支援 Ctrl 加點擊；並非所有 CMD 視窗都能點擊網址。
+停止服務會保留帳號、對話及已下載的模型，下次選 `1` 可繼續使用
 
-> 若等待超過 180 秒仍未成功，腳本會顯示目前狀態與最近的 Open WebUI 紀錄。請保留畫面並交由教師協助判讀。
+#### 只離開控制程式
 
-### 步驟三 建立 Open WebUI 帳號
+在控制視窗輸入 `0` 並按 Enter，只會關閉控制程式，不會停止 Ollama 與 Open WebUI
 
-1. 輸入本機使用的電子郵件格式帳號
-2. 設定密碼
-3. 完成登入
-
-> **第一個建立的帳號會成為此 Open WebUI 的管理者，重要資訊應謹慎保管**
-
-> 帳號只存在本機環境，不會自動建立外部雲端帳號
-
-### 步驟四 檢視服務狀態
-
-1. 開啟 `03_service-control.cmd`
-2. 輸入 `2` 並按 Enter
-
-正常狀態應看到
-
-| Compose 服務 | 預期狀態 |
-| --- | --- |
-| ollama | Up |
-| open-webui | Up（healthy） |
-
-腳本同時會顯示本機網頁的 HTTP 狀態；正常可用時應為 `200`。
-
-也可以在 CMD 或 PowerShell 執行
-
-```console
-docker compose -f 03_compose.yaml ps
-```
-
-執行指令前需先進入包含 `03_compose.yaml` 的教材資料夾
-
-### 步驟五 停止服務
-
-1. 先關閉進行中的模型回答
-2. 開啟 `03_service-control.cmd`
-3. 輸入 `3` 並按 Enter
-4. 停止服務後
-
-- 容器停止占用運算資源
-- 聊天與設定仍然保留
-- 已下載模型仍然保留
-- 下次可依「步驟六 再次啟動」恢復服務
-
-### 步驟六 下次開機再次啟動
-
-1. 開機並登入 Windows
-2. 啟動 Docker Desktop，等待左下角顯示 Engine running
-3. 進入 `03-啟動-Ollama-與-Open-WebUI` 資料夾
-4. 按兩下 `03_service-control.cmd`
-5. 輸入 `1` 並按 Enter
-6. 保持腳本視窗開啟，等待健康檢查完成
-7. 腳本自動開啟 [http://localhost:3000](http://localhost:3000) 後，使用原有帳號登入
-
-兩個服務都使用 `restart: unless-stopped`。若上次關機前沒有手動停止服務，Docker Desktop 啟動後，容器可能自行恢復；仍可執行腳本並選擇 `1`，確認服務可用並自動開啟網頁。
-
-若上次曾在控制選單選擇 `3` 停止服務，下次開機必須執行腳本並選擇 `1`，才能重新啟動容器。
+若這次已經使用完畢，應選 `3` 停止服務，不要只選 `0`
 
 ## 5 成功檢查
 
-完成本單元時應符合
-
-- Docker Desktop 顯示 Engine running
-- `ollama` 服務狀態為 Up
-- `open-webui` 服務狀態為 Up（healthy）
-- [http://localhost:3000](http://localhost:3000) 回傳 HTTP 200 並可以開啟
-- 學生可以登入自己的 Open WebUI 帳號
-- 停止再啟動後帳號資料仍然存在
+- Open WebUI 網頁可以開啟
+- 可以建立帳號或使用原有帳號登入
+- 選擇 `3` 停止後，再選 `1` 能重新開啟網頁
+- 重新登入後，原有帳號與資料仍在
 
 ## 6 常見問題與排除
 
-### 顯示找不到 docker 指令
+### 網頁沒有自動開啟
 
-確認 Docker Desktop 已安裝，重新開啟 CMD 或 PowerShell 後再試一次
+先確認 Docker Desktop 已開啟並顯示 **Engine running**，再選 `1` 試一次，也可手動開啟 [http://localhost:3000/](http://localhost:3000/)
 
-### 顯示 Docker Engine 尚未執行
+### 出現錯誤提示
 
-開啟 Docker Desktop，等待 Engine running 後，開啟 `03_service-control.cmd`並選擇 `1`
+1. 保留控制視窗，不要刪除資料或重新安裝
+2. 找到畫面上的 **Error report:**
+3. 依畫面顯示的路徑，在檔案總管找到對應的 `.txt` 文字檔
+4. 分享前先遮蔽姓名、帳號等個人資訊
+5. 將文字檔交給教師協助確認
 
-### 第一次啟動下載很久
+不需要自行解讀錯誤代碼；若找不到文字檔，請保留控制視窗並截取完整錯誤畫面交給教師
 
-確認網路連線正常，第一次需要下載兩個容器映像，後續啟動不會重複完整下載
+### 下載很久
 
-### 連接埠 3000 已被使用
+第一次下載所需時間會受網路速度影響，請確認網路正常並保持視窗開啟
 
-先關閉可能使用 3000 連接埠的其他服務，若無法確認原因，由教師協助修改 `03_compose.yaml` 中的本機連接埠
+### 忘記密碼或網頁一直無法使用
 
-### Open WebUI 顯示無法連接模型服務
+請教師協助處理，先保留現有帳號與對話資料，不要自行刪除教材或 Docker 裡的資料
 
-開啟 `03_service-control.cmd`，選擇 `2` 並確認 Ollama 狀態為 Up，若 Ollama 未啟動，先在包含 `03_compose.yaml` 的教材資料夾開啟終端機，再執行
-
-```console
-docker compose -f 03_compose.yaml restart ollama
-```
-
-### Open WebUI 狀態持續顯示 Restarting
-
-先在包含 `03_compose.yaml` 的教材資料夾開啟終端機，再執行
-
-```console
-docker compose -f 03_compose.yaml logs --tail 100 open-webui
-```
-
-若紀錄包含 `no such table: config`，代表 Open WebUI 資料庫未正確建立
-
-全新安裝且尚未建立帳號、對話或知識庫時，可確認 `03_compose.yaml` 使用 `ghcr.io/open-webui/open-webui:v0.11.3`，再依序執行
-
-```console
-docker compose -f 03_compose.yaml down
-docker volume rm local-ai_open-webui-data
-docker compose -f 03_compose.yaml pull open-webui
-docker compose -f 03_compose.yaml up -d
-```
-
-> `docker volume rm local-ai_open-webui-data` 會刪除 Open WebUI 帳號、對話、文件與知識庫，僅適用於尚未建立資料的首次安裝，若已有資料應先停止操作並進行備份
-
-### 忘記本機帳號密碼
-
-若不需要保留原有帳號、對話、設定與知識庫，可以重新建立 Open WebUI
-
-> 下列操作會永久刪除 Open WebUI 的既有資料，但會保留 Ollama 中已下載的模型
-
-1. 關閉 Open WebUI 頁面
-2. 在本單元資料夾空白處按滑鼠右鍵
-3. 選擇「在終端機中開啟」
-4. 依序執行下列指令
-
-```console
-docker compose -f 03_compose.yaml down
-docker volume rm local-ai_open-webui-data
-docker compose -f 03_compose.yaml up -d
-```
-
-5. 開啟 [http://localhost:3000](http://localhost:3000)
-6. 重新建立第一個 Open WebUI 帳號
-
-這組指令會移除舊容器、專案網路與 Open WebUI 資料卷，再建立乾淨的 Open WebUI，不會留下舊帳號資料
-
-### 關閉腳本控制視窗後服務仍然執行
-
-這是正常情況，容器在背景執行，開啟 `03_service-control.cmd`並選擇 `3` 才會停止
+教師或協助排除問題的人，可參閱 [補充教材：啟動問題排查](補充教材-啟動問題排查.md)
 
 ## 7 單元成果
 
-- 學生成功啟動 Ollama 與 Open WebUI
-- 學生建立本機帳號並能重新登入
-- 學生能使用腳本檢視狀態、停止及再次啟動服務
+學生完成 Ollama 與 Open WebUI 啟動、帳號建立或登入，並能重新啟動與停止服務而保留原有資料
 
-## 官方參考資料
+## 單元導引
 
-- [Open WebUI 官方 Docker Compose](https://github.com/open-webui/open-webui/blob/main/docker-compose.yaml)
-- [Open WebUI Quick Start](https://docs.openwebui.com/getting-started/quick-start/)
-- [Ollama Docker](https://docs.ollama.com/docker)
+- 上一單元：[單元 02 Docker Desktop 與 WSL2 安裝](../02-Docker-Desktop-與-WSL2-安裝/README.md)
+- 下一單元：[單元 04 本機模型對話實作](../04-本機模型對話實作/README.md)

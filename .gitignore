@@ -1,0 +1,9 @@
+# 簡報版本檔與建置產物
+presentation/
+outputs/presentation/
+.pptx-build/
+.script-test/
+work/
+
+# 工作區輸出副本
+outputs/

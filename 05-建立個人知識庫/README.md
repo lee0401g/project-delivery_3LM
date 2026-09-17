@@ -71,12 +71,12 @@ flowchart TD
 
 ## 3 要點
 
-- 說明 RAG 如何先尋找相關文件內容，再交由對話模型產生回答
-- 比較知識庫與對話附件的用途，說明何時適合重複使用文件
-- 利用流程圖說明文件上傳、文字擷取、內容分割與建立索引的先後關係
-- 說明對話模型與索引模型負責不同工作，索引模型不供一般對話選用
-- 引導學生理解上傳完成與索引完成是不同狀態
-- 說明文件品質、主題範圍與檔名如何影響後續查詢與來源辨識
+- RAG 會先尋找相關文件內容，再交由對話模型產生回答
+- 知識庫適合重複使用同一組文件，對話附件適合單次使用
+- 文件上傳後，還要經過文字擷取、內容分割與建立索引
+- 對話模型與索引模型負責不同工作，索引模型不供一般對話選用
+- 上傳完成與索引完成是不同狀態
+- 文件品質、主題範圍與檔名會影響後續查詢與來源辨識
 
 ## 4 實作
 
@@ -99,33 +99,29 @@ flowchart TD
 
 ### 步驟三 下載索引模型
 
-1. 開啟管理員設定
-2. 進入 Connections
-3. 找到 Ollama 連線並選擇管理模型
-4. 輸入 `embeddinggemma:300m-qat-q4_0`
-5. 開始下載並等待完成
-6. 進入管理員設定中的 Models
-7. 找到 `embeddinggemma:300m-qat-q4_0`
-8. 開啟模型選單並選擇 Hide
+1. 開啟 "設定" > "模型" > "動作" > "管理" > "從 Ollama 下載模型"
+2. 輸入 `embeddinggemma:300m-qat-q4_0`
+3. 開始下載並等待完成
+4. 至模型選單，點筆開選單並選擇 **隱藏模型**
 
-> 此模型只用於文件索引，設為 Hide 後不會出現在新對話的模型選單中，但仍可供 RAG 使用
+> 此模型只用於文件索引，設為 隱藏模型 後不會出現在新對話的模型選單中，但仍可供 RAG 使用
 
 > 選擇 Disable 或 Delete 可能使文件索引無法使用
 
 ### 步驟四 確認文件索引設定
 
-1. 開啟管理員設定中的 Documents
-2. 確認 Embedding Model Engine 為 `Ollama`
-3. 確認 Embedding Model 為 `embeddinggemma:300m-qat-q4_0`
+1. 開啟管理員設定中的 "文件"
+2. 確認 "嵌入模型引擎" 為 `Ollama`
+3. 確認 "嵌入模型" 為 `embeddinggemma:300m-qat-q4_0`
 4. 若修改了設定，儲存後再開始上傳文件
 
 文件建立索引後不要任意更換索引模型，更換後必須重新建立既有文件的索引
 
 ### 步驟五 建立知識庫
 
-1. 從側邊欄開啟 Workspace
-2. 選擇 Knowledge
-3. 選擇 Create
+1. 從側邊欄開啟 "工作區"
+2. 選擇 "知識庫"
+3. 選擇 "建立"
 4. 輸入容易辨識的知識庫名稱
 5. 在說明欄填寫主題、資料範圍與用途
 6. 完成建立並進入知識庫
@@ -158,7 +154,7 @@ flowchart TD
 
 - `embeddinggemma:300m-qat-q4_0` 已完成下載
 - `embeddinggemma:300m-qat-q4_0` 已設為 Hide 且不會出現在新對話的模型選單中
-- Embedding Model Engine 為 Ollama
+- "嵌入模型引擎" 為 Ollama
 - 已建立一個主題明確的知識庫
 - 知識庫中包含兩至五份本機文件
 - 每份文件都已完成處理且沒有錯誤
@@ -166,9 +162,9 @@ flowchart TD
 
 ## 6 常見問題與排除
 
-### 找不到 Workspace 或 Knowledge
+### 找不到 "工作區" 或 "知識庫"
 
-確認已登入 Open WebUI，若側邊欄收合，先展開側邊欄再尋找 Workspace
+確認已登入 Open WebUI，若側邊欄收合，先展開側邊欄再尋找 "工作區"
 
 ### 索引模型下載失敗
 
@@ -184,7 +180,7 @@ flowchart TD
 
 ### 已修改索引模型
 
-進入管理員設定中的 Documents，確認目前模型後執行 Reindex，讓知識庫內的既有文件使用相同模型重新建立索引
+進入管理員設定中的 "文件"，確認目前模型後執行 "重新建立索引（Reindex）"，讓知識庫內的既有文件使用相同模型重新建立索引
 
 ### 同一份文件出現多次
 
@@ -201,3 +197,8 @@ flowchart TD
 - [Open WebUI RAG](https://docs.openwebui.com/features/chat-conversations/rag/)
 - [Ollama Embeddings](https://docs.ollama.com/capabilities/embeddings)
 - [Ollama EmbeddingGemma](https://ollama.com/library/embeddinggemma/tags)
+
+## 單元導引
+
+- 上一單元：[單元 04 本機模型對話實作](../04-本機模型對話實作/README.md)
+- 下一單元：[單元 06 文件問答與引用查核](../06-文件問答與引用查核/README.md)

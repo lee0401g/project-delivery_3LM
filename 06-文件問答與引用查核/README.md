@@ -61,12 +61,12 @@ Focused Retrieval 是本課程的主要 RAG 操作模式，Full Context 用於�
 
 ## 3 要點
 
-- 說明來源標記代表系統曾參考該內容，不代表回答必然正確
-- 示範如何從回答主張回到引用片段與原始文件逐項查核
-- 引導學生分辨直接支持、部分支持、不支持與資料不足
-- 說明沒有檢索到證據時，可能是資料缺少、問題不明確或相關內容未被找出
-- 引導學生保留不同文件的相同、相反與不足之處，不急著合併成單一結論
-- 利用相同問題比較 Focused Retrieval 與 Full Context，說明兩種模式取得文件內容的差異
+- 來源標記代表系統曾參考該內容，不代表回答必然正確
+- 查核回答時，應從回答主張回到引用片段與原始文件逐項比對
+- 查核結果可分為直接支持、部分支持、不支持與資料不足
+- 沒有檢索到證據時，可能是資料缺少、問題不明確或相關內容未被找出
+- 不同文件的相同、相反與不足之處應分開保留，不急著合併成單一結論
+- 使用相同問題比較 Focused Retrieval 與 Full Context，觀察兩種模式取得文件內容的差異
 
 ## 4 實作
 
@@ -209,3 +209,8 @@ Focused Retrieval 是本課程的主要 RAG 操作模式，Full Context 用於�
 - [Open WebUI Knowledge](https://docs.openwebui.com/features/workspace/knowledge/)
 - [Open WebUI RAG](https://docs.openwebui.com/features/chat-conversations/rag/)
 - [Open WebUI Chat Features](https://docs.openwebui.com/features/chat-conversations/chat-features/)
+
+## 單元導引
+
+- 上一單元：[單元 05 建立個人知識庫](../05-建立個人知識庫/README.md)
+- 下一單元：[單元 07 資料更新與知識庫維護](../07-資料更新與知識庫維護/README.md)
