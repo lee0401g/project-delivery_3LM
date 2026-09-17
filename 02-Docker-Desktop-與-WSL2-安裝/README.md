@@ -8,13 +8,13 @@
 
 ## 2 必要觀念
 
-### WSL2 的角色
+### WSL2
 
 WSL2 讓 Windows 11 能執行本課程需要的 Linux 容器，Docker Desktop 會透過 WSL2 管理容器所需的 Linux 環境
 
 > 學生不需要學習 Linux 指令，也不需要另外管理 Ubuntu Server
 
-### Docker Desktop 的角色
+### Docker Desktop
 
 Docker Desktop 負責執行及管理容器，後續使用的 Ollama 與 Open WebUI 會放在容器中執行，課程會使用 Docker Compose 統一啟動與停止這些服務
 ```text
@@ -27,6 +27,9 @@ Windows 11
 ### 安裝前條件
 
 - 已完成 [單元 00 環境檢查](../00-課前硬體與環境檢查/README.md)
+- 單元 00 的硬體條件符合，虛擬化與 SLAT 顯示 `PASS`
+- 單元 00 中尚未安裝的 WSL 或 Docker 顯示 `INFO` 可以接受，會在本單元完成
+- 單元 00 若顯示 `WARN` 或 `UNKNOWN`，先保留畫面並請教師協助，不要直接進行安裝
 - Windows 11 64 位元
 - 虛擬化已啟用
 - RAM 建議 16 GB 以上
@@ -36,11 +39,11 @@ Windows 11
 
 ## 3 要點
 
-- 說明 WSL2 如何讓 Windows 執行本課程需要的 Linux 容器
-- 說明 Docker Desktop、Docker Engine 與 Linux containers 在本課程中的關係
-- 引導學生理解安裝完成、程式已開啟與 Docker Engine 正常執行是不同狀態
-- 示範如何利用 `docker version` 與 `docker compose version` 判讀安裝結果
-- 說明登入 Windows 後自動啟動的影響，讓學生依使用需求決定是否啟用
+- WSL2 讓 Windows 執行本課程需要的 Linux 容器
+- Docker Desktop 提供操作介面，Docker Engine 負責執行 Linux containers
+- 安裝完成、程式已開啟與 Docker Engine 正常執行是不同狀態
+- 使用 `docker version` 與 `docker compose version` 確認安裝結果
+- 登入 Windows 後是否自動啟動 Docker Desktop，可依使用需求決定
 
 ## 4 實作
 
@@ -111,14 +114,21 @@ docker version
 docker compose version
 ```
 
-兩個指令都能顯示版本資訊即代表基本環境正常
+兩個指令都能顯示版本資訊，且 Docker Desktop 顯示 Engine running，即代表可以進行本單元最後的環境複查
 
 ### 步驟六 再次執行環境檢查
 
 1. 開啟 [00-課前硬體與環境檢查](../00-課前硬體與環境檢查/) 單元資料夾
 2. 在 `00_check-environment.cmd` 上按兩下
 3. 檢查完成後畫面會保留
-4. 確認 Firmware virtualization、SLAT support、Virtual Machine Platform、WSL Windows feature、Windows hypervisor、WSL command 與 Docker Engine 顯示 `PASS`
+4. 確認以下顯示 `PASS`
+   - Firmware virtualization
+   - SLAT support
+   - Virtual Machine Platform
+   - WSL Windows feature
+   - Windows hypervisor
+   - WSL command
+   - Docker Engine
 
 ## 5 成功檢查
 
@@ -130,7 +140,7 @@ docker compose version
 - Docker Desktop 使用 Linux containers
 - `docker version` 能顯示 Client 與 Server 資訊
 - `docker compose version` 能顯示版本資訊
-- 環境檢查中的虛擬化、SLAT、Virtual Machine Platform、WSL、Windows hypervisor 與 Docker Engine 顯示 `PASS`
+- 環境檢查皆顯示 `PASS`
 
 ## 6 常見問題與排除
 
@@ -149,25 +159,9 @@ wsl --update --web-download
 
 ### 顯示虛擬化相關錯誤
 
-開啟工作管理員並進入效能 CPU，確認虛擬化顯示為已啟用，若未啟用，需由 BIOS 或 UEFI 開啟 Intel Virtualization Technology 或 AMD-V
-
-若環境檢查顯示 Virtual Machine Platform、WSL Windows 功能或 Windows hypervisor 尚未就緒，可使用自動修復
-
-1. 開啟 [00-課前硬體與環境檢查](../00-課前硬體與環境檢查/) 單元資料夾
-2. 在 `00_check-environment.cmd` 上按兩下
-3. 按 `R` 啟動修復與 WSL 安裝
-4. 在 Windows 詢問是否允許變更時選擇「是」
-5. 等待修復與安裝完成，過程可能需要網路
-6. 儲存其他應用程式中的工作並重新啟動 Windows
-7. 再次執行環境檢查並確認相關項目顯示 `PASS`
-
-> 修復腳本不會自動重新啟動 Windows
-
-> **BIOS 或 UEFI**  
-> BIOS 或 UEFI 是主機板中的系統韌體，會在 Windows 啟動前先檢查硬體並提供基本設定，新式電腦大多使用 UEFI，但操作畫面仍常被統稱為 BIOS
-
-> **Intel Virtualization Technology 或 AMD-V**  
-> 兩者分別是 Intel 與 AMD 處理器提供的硬體虛擬化功能，啟用後可讓 WSL2 與 Docker Desktop 在 Windows 中建立執行 Linux 容器所需的虛擬環境
+- 若出現 `Virtualization support not detected`，或環境檢查顯示虛擬化、WSL 等項目未通過，先保留錯誤畫面並請教師協助
+- 畫面辨識、修復前注意事項及重新檢查步驟，請參閱 [Docker Desktop 啟動錯誤排查](<Docker Desktop 啟動錯誤排查.md>)
+- 若 Docker Desktop 已顯示 `Engine running`，可繼續正常操作，不必執行錯誤排查
 
 ### Docker Desktop 一直停在 Starting
 
@@ -180,7 +174,6 @@ wsl --version
 ```console
 wsl --shutdown
 ```
-
 ### `docker version` 只有 Client 沒有 Server
 
 通常表示 Docker Desktop 尚未完成啟動，等待 Docker Desktop 顯示 Engine running 後再次執行
@@ -200,4 +193,9 @@ Docker 映像、容器與模型都會使用磁碟空間，此階段不要任意�
 wsl --version
 docker compose version
 ```
-學生再次執行環境檢查並確認虛擬化、SLAT、Virtual Machine Platform、WSL、Windows hypervisor 與 Docker Engine 顯示 `PASS`
+學生再次執行環境檢查並確認顯示 `PASS`
+
+## 單元導引
+
+- 上一單元：[單元 01 地端 AI 與本機模型基本觀念](../01-地端-AI-與本機模型基本觀念/README.md)
+- 下一單元：[單元 03 啟動 Ollama 與 Open WebUI](../03-啟動-Ollama-與-Open-WebUI/README.md)
