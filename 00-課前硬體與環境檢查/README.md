@@ -24,10 +24,8 @@
 
 ## 3 要點
 
-- 說明 `PASS`、`WARN`、`INFO` 與 `UNKNOWN` 各自代表的意義
-- 引導學生分辨硬體條件與軟體準備狀態，避免將尚未安裝誤認為硬體不合格
-- 說明如何依檢查結果判斷可直接繼續、需要處理或需要進一步確認
-- 示範後續完成環境設定時，如何重新執行檢查並比較狀態變化
+- 硬體條件與軟體準備狀態應分開判讀，尚未安裝不等於硬體不合格
+- 完成後續環境設定後，再次執行檢查並比較狀態變化
 
 ## 4 實作
 
@@ -36,6 +34,12 @@
 1. 在 `00_check-environment.cmd` 上按兩下
 2. 等待環境檢查完成
 3. 檢視 `PASS`、`WARN`、`INFO` 與 `UNKNOWN`
+
+   - `PASS`：目前條件已符合，可依流程繼續
+   - `INFO`：尚未完成後續安裝或設定，不代表電腦不符合，可先完成單元 02
+   - `WARN`：需要重新檢查或請教師協助確認，未確認前不要自行判定可繼續
+   - `UNKNOWN`：腳本無法確認狀態，請保留畫面並請教師協助
+
 4. 沒有顯示修復選項時按任意鍵關閉視窗
 
 若按兩下無法執行
@@ -49,7 +53,7 @@
 .\00_check-environment.cmd
 ```
 
-腳本不會建立報告檔，正常檢查不會修改系統設定
+> 腳本檢查不會修改系統設定
 
 若 Virtual Machine Platform、WSL Windows 功能或 Windows hypervisor 尚未就緒，畫面會提供兩個選項
 
@@ -83,6 +87,8 @@
 - 虛擬化已啟用
 - SLAT 顯示 `PASS`
 
+完成單元 00 後，單元 02 的安裝前條件是：硬體條件符合，虛擬化已啟用；Virtual Machine Platform、WSL 與 Docker 尚未完成時顯示 `INFO` 可以接受，這些項目會在單元 02 處理
+
 > Virtual Machine Platform、WSL、Windows hypervisor 與 Docker 尚未準備完成時會顯示 `INFO`
 
 ## 6 常見問題與排除
@@ -108,11 +114,11 @@
 
 ### Virtual Machine Platform 或 WSL Windows 功能顯示 `INFO`
 
-按 `R` 可自動啟用必要設定，若暫不處理可以按 `X` 關閉腳本，完成安裝後應顯示 `PASS`
+按 `R` 可自動啟用必要設定，若暫不處理可以按 `X` 關閉腳本；完成單元 02 的安裝與設定後，應重新檢查並顯示 `PASS`
 
 ### Windows hypervisor 顯示 `WARN`
 
-代表 Virtual Machine Platform 已啟用，但 Windows hypervisor 沒有正常執行，先重新啟動 Windows，若仍顯示 `WARN`，再次執行腳本並按 `R` 修復
+代表 Virtual Machine Platform 已啟用，但 Windows hypervisor 沒有正常執行，暫時不要進入後續安裝；先重新啟動 Windows，若仍顯示 `WARN`，請保留畫面並請教師協助
 
 ### WSL 尚未安裝
 
@@ -129,3 +135,8 @@ Docker Desktop 尚未安裝時屬於正常情況
 ## 7 單元成果
 
 學生展示檢查畫面或自行記錄需要處理的項目
+
+## 單元導引
+
+- [返回課程首頁](../README.md)
+- 下一單元：[單元 01 地端 AI 與本機模型基本觀念](../01-地端-AI-與本機模型基本觀念/README.md)
