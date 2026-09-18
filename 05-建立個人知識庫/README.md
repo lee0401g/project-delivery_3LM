@@ -69,6 +69,8 @@ flowchart TD
 
 本課程建立知識庫時先使用預設的 Focused Retrieval，Full Context 會在第 06 單元進行比較
 
+Knowledge、RAG、File Context 與工具呼叫的關係，請參閱 [補充教材：Knowledge、RAG 與文件使用模式](補充-Knowledge-RAG-與文件使用模式.md)
+
 ## 3 要點
 
 - RAG 會先尋找相關文件內容，再交由對話模型產生回答
