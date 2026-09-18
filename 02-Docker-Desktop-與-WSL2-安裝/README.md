@@ -24,6 +24,8 @@ Windows 11
       └─ 後續課程使用的容器
 ```
 
+Windows、macOS 與 Linux 執行 Linux containers 時使用的底層環境不同，詳細說明與補強方式請參閱 [Docker 在不同作業系統的執行差異](補充-Docker-在不同作業系統的執行差異.md)
+
 ### 安裝前條件
 
 - 已完成 [單元 00 環境檢查](../00-課前硬體與環境檢查/README.md)
