@@ -1,4 +1,6 @@
-# 補充教材：GitHub Desktop 同步教材
+# 補充教材-GitHub Desktop 同步教材
+
+本文件供需要在課程期間持續取得教材更新的學生使用，說明如何以 GitHub Desktop 保留教材資料夾並取得後續更新
 
 ## 適用情況
 
@@ -98,3 +100,5 @@ GitHub Desktop 左側的 "Changes" 若出現檔案，代表本機教材與 GitHu
 - [GitHub Desktop：Clone 儲存庫](https://docs.github.com/en/desktop/adding-and-cloning-repositories/cloning-and-forking-repositories-from-github-desktop)
 - [GitHub：取得遠端儲存庫更新](https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository)
 - [GitHub Desktop：使用遠端儲存庫](https://docs.github.com/en/desktop/working-with-your-remote-repository-on-github-or-github-enterprise)
+
+回到 [單元 00 說明文件](README.md)

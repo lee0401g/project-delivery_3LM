@@ -1,4 +1,6 @@
-# 補充教材：Docker 在不同作業系統的執行差異
+# 補充教材-Docker 在不同作業系統的執行差異
+
+本文件前半供學生理解 Windows、macOS 與 Linux 執行 Linux containers（Linux 容器）時的差異，後半的補強建議供教師規劃跨平台教材時參考
 
 ## 為什麼相同的 Docker 教材仍可能出現差異
 
@@ -33,7 +35,7 @@ Windows 11
 
 這樣可以讓全班使用相同的操作畫面、腳本及 `03_compose.yaml`
 
->本課程不使用 Windows containers，也不要求學生另外安裝或管理 Ubuntu 發行版
+> 本課程不使用 Windows containers，也不要求學生另外安裝或管理 Ubuntu 發行版
 
 ## 常見差異來源
 
@@ -80,7 +82,7 @@ GPU 的品牌、驅動程式、主機作業系統及 Docker backend 都會影響
 6. 確認教材資料夾與設定檔沒有被移動或改名
 7. 保留錯誤畫面及錯誤紀錄，請教師協助確認
 
-## 教材與環境的補強建議
+## 教師的教材與環境補強建議
 
 ### 維持一致的課程基準
 
@@ -101,10 +103,10 @@ GPU 的品牌、驅動程式、主機作業系統及 Docker backend 都會影響
 若未來要支援 macOS 或 Linux，應為每個平台分別驗證
 
 - 安裝方式
-- CPU架構與容器映像
+- CPU 架構與容器映像
 - 檔案共享與權限
 - 網路與連接埠
-- GPU支援
+- GPU 支援
 - 啟動、停止、備份及還原流程
 
 不同平台驗證完成前，不應直接宣稱 Windows 教材可以原樣套用
@@ -117,3 +119,5 @@ GPU 的品牌、驅動程式、主機作業系統及 Docker backend 都會影響
 - [Docker Desktop for Linux](https://docs.docker.com/desktop/setup/install/linux/)
 - [Docker Desktop for Mac 常見問題](https://docs.docker.com/desktop/troubleshoot-and-support/faqs/macfaqs/)
 - [Docker Desktop GPU 支援](https://docs.docker.com/desktop/features/gpu/)
+
+回到 [單元 02 說明文件](README.md)

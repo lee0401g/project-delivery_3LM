@@ -49,7 +49,7 @@ flowchart TD
 ```
 建立索引後，系統可依問題找出相關內容，不需要每次把所有文件全文交給對話模型
 
-完整流程請參閱 [補充教材：本次實作架構演進](補充-本次實作架構演進.md)
+完整流程請參閱 [補充教材-本次實作架構演進](補充教材-本次實作架構演進.md)
 
 ### 對話模型與索引模型
 
@@ -69,7 +69,7 @@ flowchart TD
 
 本課程建立知識庫時先使用預設的 Focused Retrieval，Full Context 會在第 06 單元進行比較
 
-Knowledge、RAG、File Context 與工具呼叫的關係，請參閱 [補充教材：Knowledge、RAG 與文件使用模式](補充-Knowledge-RAG-與文件使用模式.md)
+Knowledge、RAG、File Context 與工具呼叫的關係，請參閱 [補充教材-Knowledge、RAG 與文件使用模式](補充教材-Knowledge、RAG-與文件使用模式.md)
 
 ## 3 要點
 

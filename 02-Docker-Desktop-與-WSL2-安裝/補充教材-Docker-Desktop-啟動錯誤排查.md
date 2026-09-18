@@ -1,6 +1,8 @@
-# 補充教材：Docker Desktop 啟動錯誤排查
+# 補充教材-Docker Desktop 啟動錯誤排查
 
 本文件供 Docker Desktop 無法正常啟動時查閱，不屬於一般安裝流程的必做步驟
+
+需要進入 BIOS 或 UEFI、執行修復或使用系統管理員權限時，應由教師或設備管理人員協助
 
 若左下角已顯示 `Engine running`，請回到簡報「重新檢查」，繼續正常流程
 
@@ -139,16 +141,6 @@
 
 > 若韌體虛擬化仍未顯示 `PASS`，停止修改 BIOS 或 UEFI，保留畫面並請教師協助
 
-## 官方參考資料
-
-- [Docker Desktop for Windows 系統需求](https://docs.docker.com/desktop/setup/install/windows-install/)
-- [Microsoft：在 Windows 啟用虛擬化](https://support.microsoft.com/en-us/windows/experience/enable-virtualization-on-windows)
-- [Dell：啟用或停用硬體虛擬化](https://www.dell.com/support/kbdoc/en-us/000195978/how-to-enable-or-disable-hardware-virtualization-on-dell-systems)
-- [Lenovo IdeaPad：進入 BIOS 的建議方式](https://support.lenovo.com/uu/en/solutions/ht500216)
-- [ASUS：在 BIOS 設定虛擬化技術](https://www.asus.com/us/support/faq/1045141/)
-- [Acer：啟用虛擬化技術](https://community.acer.com/en/kb/articles/14750)
-- [Microsoft Surface：使用 Surface UEFI](https://support.microsoft.com/en-us/surface/drivers-firmware/how-to-use-surface-uefi)
-
 ## 回到正常流程
 
 1. 重新開啟 Docker Desktop
@@ -159,5 +151,15 @@
 > 若仍顯示相同錯誤，請提供 Docker 錯誤畫面、環境檢查結果，以及已執行的步驟，交由教師判斷
 
 > 不要為了排除啟動問題而重設 Docker、刪除資料或反覆重新安裝
+
+## 官方參考資料
+
+- [Docker Desktop for Windows 系統需求](https://docs.docker.com/desktop/setup/install/windows-install/)
+- [Microsoft：在 Windows 啟用虛擬化](https://support.microsoft.com/en-us/windows/experience/enable-virtualization-on-windows)
+- [Dell：啟用或停用硬體虛擬化](https://www.dell.com/support/kbdoc/en-us/000195978/how-to-enable-or-disable-hardware-virtualization-on-dell-systems)
+- [Lenovo IdeaPad：進入 BIOS 的建議方式](https://support.lenovo.com/uu/en/solutions/ht500216)
+- [ASUS：在 BIOS 設定虛擬化技術](https://www.asus.com/us/support/faq/1045141/)
+- [Acer：啟用虛擬化技術](https://community.acer.com/en/kb/articles/14750)
+- [Microsoft Surface：使用 Surface UEFI](https://support.microsoft.com/en-us/surface/drivers-firmware/how-to-use-surface-uefi)
 
 回到 [單元 02 說明文件](README.md)

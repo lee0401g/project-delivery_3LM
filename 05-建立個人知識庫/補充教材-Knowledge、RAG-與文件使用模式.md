@@ -1,6 +1,6 @@
-# 補充教材：Knowledge、RAG 與文件使用模式
+# 補充教材-Knowledge、RAG 與文件使用模式
 
-**Open WebUI 中的 Knowledge、RAG、File Context 與工具呼叫差異？**
+本文件供想了解 Open WebUI 文件使用方式的學生與教師查閱，說明 Knowledge（知識庫）、RAG（檢索增強生成）、File Context（檔案內容）與工具呼叫之間的關係
 
 最簡單的理解方式是：
 
@@ -175,7 +175,6 @@ Open WebUI 搜尋或讀取文件
 不支援 Native Function Calling 的模型仍可用於一般對話與 Traditional RAG，但不應作為 Agentic RAG 的示範模型
 
 例如 `gemma3:4b` 可以保留在一般對話或不依賴工具呼叫的教材內容中，但本課程實測顯示它不適合用來示範 Agentic RAG
-
 
 ## 常見誤判
 
