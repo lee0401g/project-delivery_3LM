@@ -1,4 +1,4 @@
-# Docker Desktop 啟動錯誤排查
+# 補充教材：Docker Desktop 啟動錯誤排查
 
 本文件供 Docker Desktop 無法正常啟動時查閱，不屬於一般安裝流程的必做步驟
 

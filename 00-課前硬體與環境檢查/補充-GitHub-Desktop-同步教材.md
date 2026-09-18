@@ -1,4 +1,4 @@
-# 補充教材-GitHub Desktop 同步教材
+# 補充教材：GitHub Desktop 同步教材
 
 ## 適用情況
 

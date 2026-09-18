@@ -24,7 +24,7 @@ Windows 11
       └─ 後續課程使用的容器
 ```
 
-Windows、macOS 與 Linux 執行 Linux containers 時使用的底層環境不同，詳細說明與補強方式請參閱 [Docker 在不同作業系統的執行差異](補充-Docker-在不同作業系統的執行差異.md)
+Windows、macOS 與 Linux 執行 Linux containers 時使用的底層環境不同，詳細說明與補強方式請參閱 [補充教材：Docker 在不同作業系統的執行差異](補充-Docker-在不同作業系統的執行差異.md)
 
 ### 安裝前條件
 
@@ -162,7 +162,7 @@ wsl --update --web-download
 ### 顯示虛擬化相關錯誤
 
 - 若出現 `Virtualization support not detected`，或環境檢查顯示虛擬化、WSL 等項目未通過，先保留錯誤畫面並請教師協助
-- 畫面辨識、修復前注意事項及重新檢查步驟，請參閱 [Docker Desktop 啟動錯誤排查](<Docker Desktop 啟動錯誤排查.md>)
+- 畫面辨識、修復前注意事項及重新檢查步驟，請參閱 [補充教材：Docker Desktop 啟動錯誤排查](補充-Docker-Desktop-啟動錯誤排查.md)
 - 若 Docker Desktop 已顯示 `Engine running`，可繼續正常操作，不必執行錯誤排查
 
 ### Docker Desktop 一直停在 Starting
