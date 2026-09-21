@@ -61,6 +61,8 @@ Focused Retrieval 是本課程的主要 RAG 操作模式，Full Context 用於�
 
 Knowledge、File Context、Builtin Tools 與工具呼叫的完整關係，請參閱 [補充教材-Knowledge、RAG 與文件使用模式](../05-建立個人知識庫/補充教材-Knowledge、RAG-與文件使用模式.md)
 
+需要使用固定文件與問題比較檢索、回答及引用品質時，請參閱 [補充教材-RAG 測試與評分](補充教材-RAG-測試與評分.md)
+
 ## 3 要點
 
 - 來源標記代表系統曾參考該內容，不代表回答必然正確
