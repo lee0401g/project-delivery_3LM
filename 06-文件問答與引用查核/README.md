@@ -81,7 +81,7 @@ Knowledge、File Context、Builtin Tools 與工具呼叫的完整關係，請參
 3. 選擇 `1 Start Ollama and Open WebUI`
 4. 開啟 [http://localhost:3000](http://localhost:3000)
 5. 登入自己的本機帳號
-6. 建立新對話並選擇 `gemma3:4b`
+6. 建立新對話並選擇 `phi4-mini:3.8b-q4_K_M`
 7. 在訊息輸入區輸入 `#`
 8. 從清單選擇第 05 單元建立的知識庫
 9. 選擇知識庫項目並確認使用 Focused Retrieval
@@ -165,7 +165,7 @@ Knowledge、File Context、Builtin Tools 與工具呼叫的完整關係，請參
 
 ## 5 成功檢查
 
-- 新對話已選擇 `gemma3:4b` 與指定知識庫
+- 新對話已選擇 `phi4-mini:3.8b-q4_K_M` 與指定知識庫
 - 知識庫預設使用 Focused Retrieval
 - 回答包含可開啟的來源標記
 - 至少三項回答主張已與原始文件比對

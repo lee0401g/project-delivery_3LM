@@ -80,7 +80,7 @@
 5. 確認 Ollama 與 Open WebUI 狀態都是 Up
 6. 開啟 [http://localhost:3000](http://localhost:3000)
 7. 登入自己的本機帳號
-8. 建立新對話並選擇 `gemma3:4b`
+8. 建立新對話並選擇 `phi4-mini:3.8b-q4_K_M`
 9. 輸入一個簡短問題並確認模型能正常回答
 10. 開啟 "工作區（Workspace）" > "知識庫（Knowledge）"，確認個人知識庫與文件仍然存在
 
@@ -191,12 +191,12 @@
 
 ### 步驟九 測試外網中斷時使用
 
-> 執行前確認 `gemma3:4b`、`embeddinggemma:300m-qat-q4_0` 與知識庫文件都已完成下載及處理
+> 執行前確認 `phi4-mini:3.8b-q4_K_M`、`embeddinggemma:300m-qat-q4_0` 與知識庫文件都已完成下載及處理
 
 1. 暫時中斷測試電腦的外網連線
 2. 保持 Docker Desktop、Ollama 與 Open WebUI 執行
 3. 開啟 [http://localhost:3000](http://localhost:3000)
-4. 建立新對話並選擇 `gemma3:4b`
+4. 建立新對話並選擇 `phi4-mini:3.8b-q4_K_M`
 5. 連結個人知識庫
 6. 重複一個已通過來源查核的問題
 7. 確認模型能回答且來源仍可開啟
@@ -225,7 +225,7 @@
 ## 5 成功檢查
 
 - Ollama 與 Open WebUI 可正常啟動
-- `gemma3:4b` 可進行繁體中文對話
+- `phi4-mini:3.8b-q4_K_M` 可進行繁體中文對話
 - 個人知識庫至少包含兩份可檢索文件
 - 四項驗收任務均已留下對話紀錄
 - 至少三項重要主張已完成原文查核

@@ -55,7 +55,7 @@ flowchart TD
 
 | 模型 | 用途 |
 | --- | --- |
-| `gemma3:4b` | 理解問題並產生回答 |
+| `phi4-mini:3.8b-q4_K_M` | 理解問題並產生回答 |
 | `embeddinggemma:300m-qat-q4_0` | 建立文件索引並尋找相關內容 |
 
 > `embeddinggemma:300m-qat-q4_0` 約為 239 MB，第一次下載需要網路，下載完成後可在本機離線使用
