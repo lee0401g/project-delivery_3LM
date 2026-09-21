@@ -4,6 +4,7 @@ outputs/presentation/
 .pptx-build/
 .script-test/
 work/
+tmp/
 
 # 工作區輸出副本
 outputs/
