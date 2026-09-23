@@ -17,14 +17,16 @@
 
 ### 本單元使用的模型
 
-本課程使用 Gemma 3 4B
+本課程使用 Phi-4 Mini 3.8B 的 Q4_K_M 量化版本
 ```text
-gemma3:4b
+phi4-mini:3.8b-q4_K_M
 ```
-- Gemma 3 4B 由 Google 開發，Ollama 模型檔案約為 3.3 GB，支援文字、圖片及多語內容
-- Gemma 採用 **Google Gemma 使用條款**，教材與 GitHub 不包含或重新散布模型檔案，每位學生應透過 Ollama 自行下載
-- 閱讀授權問題，參見 [補充教材－模型授權與使用條款](補充-模型授權與使用條款.md)
-- 需要依硬體或用途選擇備用模型時，參見 [補充教材－模型選擇與比較](補充-模型選擇與比較.md)
+- Phi-4 Mini 由 Microsoft 開發，這個 Ollama 模型檔案約為 2.5 GB，支援文字、多語問答、推理、數學與工具呼叫
+- `3.8b` 表示模型規模，`q4_K_M` 表示本課程指定的量化版本
+- Phi-4 Mini 採用 MIT 授權，教材與 GitHub 不包含模型檔案，每位學生應透過 Ollama 自行下載
+- 閱讀授權問題，請參閱 [補充教材-模型授權與使用條款](補充教材-模型授權與使用條款.md)
+- 需要依硬體或用途選擇備用模型時，請參閱 [補充教材-模型選擇與比較](補充教材-模型選擇與比較.md)
+- 需要了解模型基本功能並比較實際表現時，請參閱 [補充教材-模型基本能力與測試](補充教材-模型基本能力與測試.md)
 
 ### 多輪對話
 
@@ -33,7 +35,7 @@ gemma3:4b
 
 ## 3 要點
 
-- 模型系列、模型規模與完整標籤 `gemma3:4b` 代表不同資訊
+- 模型系列、模型規模、量化方式與完整標籤 `phi4-mini:3.8b-q4_K_M` 代表不同資訊
 - 下載模型、選擇模型與開始對話是三個不同動作
 - 同一個對話會保留前文，建立新對話則不會沿用原有內容
 - 對話時應觀察回答速度、繁體中文品質與指令遵循情形
@@ -55,7 +57,7 @@ gemma3:4b
 1. 開啟管理員設定
 2. 進入 Connections
 3. 找到 Ollama 連線並選擇管理模型
-4. 輸入 `gemma3:4b`
+4. 輸入 `phi4-mini:3.8b-q4_K_M`
 5. 開始下載並等待完成
 
 > 下載時間會受到模型容量與網路速度影響
@@ -107,7 +109,7 @@ gemma3:4b
 
 完成本單元時應符合
 
-- `gemma3:4b` 已完成下載
+- `phi4-mini:3.8b-q4_K_M` 已完成下載
 - 模型可從 Open WebUI 的模型清單選擇
 - 能取得繁體中文回答
 - 能在同一個對話中進行連續追問
@@ -143,8 +145,9 @@ gemma3:4b
 ## 官方參考資料
 
 - [Open WebUI 模型管理](https://docs.openwebui.com/features/workspace/models/)
-- [Ollama Gemma 3](https://ollama.com/library/gemma3)
-- [Google Gemma 使用條款](https://ai.google.dev/gemma/terms)
+- [Ollama Phi-4 Mini](https://ollama.com/library/phi4-mini)
+- [Microsoft Phi-4 Mini 模型資料](https://huggingface.co/microsoft/Phi-4-mini-instruct)
+- [MIT License](https://opensource.org/license/mit)
 - [Ollama CLI 模型管理指令](https://docs.ollama.com/cli)
 
 ## 單元導引

@@ -33,7 +33,7 @@
 - 知識庫
 - 文件索引
 
-大型模型檔案不包含在備份中，避免同一模型重複占用數 GB 空間，需要重建完整環境時再重新下載 `gemma3:4b` 與 `embeddinggemma:300m-qat-q4_0`
+大型模型檔案不包含在備份中，避免同一模型重複占用數 GB 空間，需要重建完整環境時再重新下載 `phi4-mini:3.8b-q4_K_M` 與 `embeddinggemma:300m-qat-q4_0`
 
 > 若還原時完全無法連接網路，必須先保留原有 Ollama 資料卷，否則無法重新下載模型
 
@@ -197,7 +197,7 @@ Documents\Local-AI-Backups
 
 ### 還原後找不到模型
 
-備份不包含 Ollama 模型，若模型資料卷曾被移除，需要連接網路並重新下載 `gemma3:4b` 與 `embeddinggemma:300m-qat-q4_0`
+備份不包含 Ollama 模型，若模型資料卷曾被移除，需要連接網路並重新下載 `phi4-mini:3.8b-q4_K_M` 與 `embeddinggemma:300m-qat-q4_0`
 
 ### 想保留模型但重設 Open WebUI
 
