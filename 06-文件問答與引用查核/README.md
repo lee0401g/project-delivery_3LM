@@ -83,7 +83,7 @@ Knowledge、File Context、Builtin Tools 與工具呼叫的完整關係，請參
 5. 登入自己的本機帳號
 6. 建立新對話並選擇 `phi4-mini:3.8b-q4_K_M`
 7. 在訊息輸入區輸入 `#`
-8. 從清單選擇第 05 單元建立的知識庫
+8. 從清單選擇單元 05 建立的知識庫
 9. 選擇知識庫項目並確認使用 Focused Retrieval
 
 > 若畫面使用不同語言，Focused Retrieval 可能顯示為 Using Focused Retrieval

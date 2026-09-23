@@ -84,7 +84,7 @@ flowchart TD
 4. 開啟 [http://localhost:3000](http://localhost:3000)
 5. 登入自己的本機帳號
 6. 從側邊欄開啟 "工作區（Workspace）"
-7. 選擇 "知識庫（Knowledge）" 並進入第 05 單元建立的知識庫
+7. 選擇 "知識庫（Knowledge）" 並進入單元 05 建立的知識庫
 8. 記錄目前的文件名稱與版本
 
 ### 步驟二 準備新版文件
