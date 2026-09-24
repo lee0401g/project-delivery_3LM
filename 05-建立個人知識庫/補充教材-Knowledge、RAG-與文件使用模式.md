@@ -24,6 +24,15 @@
 
 同一個 Knowledge 可以使用 Focused Retrieval，也可以切換為 Full Context；在模型支援工具呼叫時，也可以供 Agentic RAG（代理式 RAG）使用
 
+在 Open WebUI `v0.11.3` 的繁體中文介面中：
+
+| 內容取得方式 | 畫面文字 | 開關位置 |
+| --- | --- | --- |
+| Focused Retrieval（聚焦檢索） | 使用聚焦檢索（Using Focused Retrieval） | 關閉 |
+| Full Context（完整內容） | 使用完整檔案（Using Entire Document） | 開啟 |
+
+> 這個開關控制是否改用完整檔案。畫面顯示「使用聚焦檢索」且開關位於關閉位置時，仍代表目前正在使用 Focused Retrieval；開啟後才會改成「使用完整檔案」
+
 ## Knowledge 與聊天附件
 
 兩者都能提供文件內容，但管理範圍不同

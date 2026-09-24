@@ -64,10 +64,10 @@ flowchart TD
 
 | 模式 | 運作方式 | 適合情況 |
 | --- | --- | --- |
-| Focused Retrieval | 只取出與問題相關的內容 | 多份文件、較長文件、一般知識庫問答 |
-| Full Context | 每次將整份文件內容交給模型 | 內容很短且必須完整閱讀的文件 |
+| Focused Retrieval（聚焦檢索） | 只取出與問題相關的內容 | 多份文件、較長文件、一般知識庫問答 |
+| Full Context（完整內容） | 每次將整份文件內容交給模型 | 內容很短且必須完整閱讀的文件 |
 
-> 本課程建立知識庫時先使用預設的 Focused Retrieval，Full Context 會在單元 06 進行比較
+> 本單元先完成 Knowledge（知識庫）與文件索引；單元 06 會在對話中明確確認「使用聚焦檢索（Using Focused Retrieval）」並與「使用完整檔案（Using Entire Document／Full Context）」比較
 
 Knowledge、RAG、File Context 與工具呼叫的關係，請參閱 [補充教材-Knowledge、RAG 與文件使用模式](補充教材-Knowledge、RAG-與文件使用模式.md)
 
@@ -162,6 +162,8 @@ Knowledge、RAG、File Context 與工具呼叫的關係，請參閱 [補充教�
 - "嵌入模型引擎" 為 Ollama
 - 已建立一個主題明確的知識庫
 - 知識庫中包含兩至五份本機文件
+- 知識庫中包含 `設備借用與歸還規則_v1.md`
+- 本機仍保留可編輯的 `設備借用與歸還規則_v1.md` 原始檔
 - 每份文件都已完成處理且沒有錯誤
 - 關閉並重新開啟頁面後仍能看到知識庫與文件
 

@@ -75,18 +75,20 @@
 
 1. 啟動 Docker Desktop 並等待 Engine running
 2. 開啟 `03_service-control.cmd`
-3. 選擇 `1 Start Ollama and Open WebUI`
-4. 返回選單並選擇 `2 View service status`
-5. 確認 Ollama 與 Open WebUI 狀態都是 Up
-6. 開啟 [http://localhost:3000](http://localhost:3000)
-7. 登入自己的本機帳號
-8. 建立新對話並選擇 `phi4-mini:3.8b-q4_K_M`
-9. 輸入一個簡短問題並確認模型能正常回答
-10. 開啟 "工作區（Workspace）" > "知識庫（Knowledge）"，確認個人知識庫與文件仍然存在
+3. 選擇 `3 Stop Ollama and Open WebUI`，等待程式完成停止並返回選單
+4. 選擇 `1 Start Ollama and Open WebUI`
+5. 等待瀏覽器開啟 Open WebUI
+6. 返回選單並選擇 `2 View service status`
+7. 確認 Ollama 與 Open WebUI 狀態都是 Up
+8. 開啟 [http://localhost:3000](http://localhost:3000)
+9. 登入自己的本機帳號
+10. 建立新對話並選擇 `phi4-mini:3.8b-q4_K_M`
+11. 輸入一個簡短問題並確認模型能正常回答
+12. 開啟 "工作區（Workspace）" > "知識庫（Knowledge）"，確認個人知識庫與文件仍然存在
 
 ### 步驟三 設定共同回答原則
 
-四項驗收任務都先輸入下列內容
+每一項驗收任務都建立新對話，連結指定文件或知識庫後，先輸入下列共同回答原則，再輸入該項任務的提示詞
 
 ```text
 只根據目前選擇的文件或知識庫回答
