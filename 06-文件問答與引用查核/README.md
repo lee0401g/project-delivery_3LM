@@ -60,7 +60,7 @@ flowchart TD
 - Focused Retrieval 是本課程的主要 RAG 操作模式
 - Full Context 用於短文件的完整閱讀比較
 
-> Open WebUI `v0.11.3` 的模式開關控制是否改用完整檔案。顯示「使用聚焦檢索（Using Focused Retrieval）」時，開關位於關閉位置是正常狀態；開啟後會改為「使用完整檔案（Using Entire Document）」
+> Open WebUI 的模式開關旁文字表示為 **當前狀態**，控制是否改用完整檔案。顯示「使用聚焦檢索（Using Focused Retrieval）」時，開關位於關閉位置是正常狀態；開啟後會改為「使用完整檔案（Using Entire Document）」
 
 > Knowledge、File Context、Builtin Tools 與工具呼叫的完整關係，請參閱 [補充教材-Knowledge、RAG 與文件使用模式](../05-建立個人知識庫/補充教材-Knowledge、RAG-與文件使用模式.md)
 
