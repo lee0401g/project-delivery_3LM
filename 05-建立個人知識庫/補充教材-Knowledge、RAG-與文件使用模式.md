@@ -24,6 +24,15 @@
 
 同一個 Knowledge 可以使用 Focused Retrieval，也可以切換為 Full Context；在模型支援工具呼叫時，也可以供 Agentic RAG（代理式 RAG）使用
 
+在 Open WebUI `v0.11.3` 的繁體中文介面中：
+
+| 內容取得方式 | 畫面文字 | 開關位置 |
+| --- | --- | --- |
+| Focused Retrieval（聚焦檢索） | 使用聚焦檢索（Using Focused Retrieval） | 關閉 |
+| Full Context（完整內容） | 使用完整檔案（Using Entire Document） | 開啟 |
+
+> 這個開關控制是否改用完整檔案。畫面顯示「使用聚焦檢索」且開關位於關閉位置時，仍代表目前正在使用 Focused Retrieval；開啟後才會改成「使用完整檔案」
+
 ## Knowledge 與聊天附件
 
 兩者都能提供文件內容，但管理範圍不同
@@ -68,7 +77,7 @@ Vector Database（向量資料庫）
 
 - 每個 Chunk（內容片段）都會建立 Embedding，系統收到問題後，再找出較相關的內容片段
 - Vector Database 是檢索索引的實作方式之一，不等於 Knowledge，也不負責產生回答
-- 使用 Full Context 時，不會先以相似度挑選部分 Chunk，而是將完整文件內容放入 Context，因此較適合短文件
+- **使用 Full Context 時，不會先以相似度挑選部分 Chunk，而是將完整文件內容放入 Context，因此較適合短文件**
 
 ## Traditional RAG
 
@@ -162,7 +171,7 @@ Open WebUI 搜尋或讀取文件
 
 ## 模型能力與本課程的關係
 
-模型能回答一般問題，不代表能完成工具呼叫
+> **模型能回答一般問題，不代表能完成工具呼叫**
 
 要使用 Agentic RAG，需同時確認：
 
@@ -174,9 +183,9 @@ Open WebUI 搜尋或讀取文件
 
 不支援 Native Function Calling 的模型仍可用於一般對話與 Traditional RAG，但不應作為 Agentic RAG 的示範模型
 
-本課程使用的 `phi4-mini:3.8b-q4_K_M` 支援工具呼叫，可供 Traditional RAG 與 Agentic RAG 比較；正式操作前仍需確認 Ollama、Open WebUI 與模型在目前版本組合下能正確完成工具呼叫
+> 本課程使用的 `phi4-mini:3.8b-q4_K_M` 支援工具呼叫，可供 Traditional RAG 與 Agentic RAG 比較；正式操作前仍需確認 Ollama、Open WebUI 與模型在目前版本組合下能正確完成工具呼叫
 
-`gemma3:4b` 可保留為不依賴工具呼叫的比較案例，本課程先前實測顯示它不適合用來示範 Agentic RAG
+> `gemma3:4b` 可保留為不依賴工具呼叫的比較案例，本課程先前實測顯示它不適合用來示範 Agentic RAG
 
 ## 常見誤判
 
@@ -211,9 +220,9 @@ flowchart TD
 
 ## 版本範圍
 
-本文件依本課程使用的 Open WebUI `v0.11.3` 撰寫
+本課程依 Open WebUI `v0.11.3` 撰寫
 
-Open WebUI 的介面名稱、預設值與工具行為可能隨版本改變，升級版本後應重新核對操作畫面與實際結果
+> Open WebUI 的介面名稱、預設值與工具行為可能隨版本改變，升級版本後應重新核對操作畫面與實際結果
 
 ## 官方參考資料
 
