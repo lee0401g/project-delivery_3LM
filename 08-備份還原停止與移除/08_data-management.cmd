@@ -4,7 +4,7 @@ setlocal EnableExtensions EnableDelayedExpansion
 title Local AI Data Management
 set "SCRIPT_DIR=%~dp0"
 set "COMPOSE_FILE=%SCRIPT_DIR%..\03-啟動-Ollama-與-Open-WebUI\03_compose.yaml"
-set "BACKUP_ROOT=%USERPROFILE%\Documents\Local-AI-Backups"
+for %%I in ("%SCRIPT_DIR%..\..\Local-AI-Backups") do set "BACKUP_ROOT=%%~fI"
 for /F "delims=" %%E in ('echo prompt $E^| cmd') do set "ESC=%%E"
 
 :menu
@@ -39,7 +39,7 @@ if not defined WEBUI_CONTAINER (
     echo %ESC%[93mStart the services from Unit 03 before creating a backup%ESC%[0m
     goto action_failed
 )
-for /f "delims=" %%T in ('powershell.exe -NoLogo -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmmss"') do set "STAMP=%%T"
+for /f "delims=" %%T in ('powershell.exe -NoLogo -NoProfile -Command "Get-Date -Format yyyy-MM-dd_HHmmss"') do set "STAMP=%%T"
 set "BACKUP_DIR=!BACKUP_ROOT!\OpenWebUI-!STAMP!"
 echo %ESC%[96mStopping services before backup%ESC%[0m
 docker compose -f "!COMPOSE_FILE!" stop
