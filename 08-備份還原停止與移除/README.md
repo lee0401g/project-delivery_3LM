@@ -38,13 +38,26 @@
 
 ### 備份必須放在資料卷之外
 
-備份預設儲存在 Windows 的下列資料夾
+備份預設儲存在教材專案資料夾的外面，與教材專案位於同一層
 
 ```text
-Documents\Local-AI-Backups
+教材所在位置/
+├─ project-delivery_3LM/
+│  ├─ 03-啟動-Ollama-與-Open-WebUI/
+│  └─ 08-備份還原停止與移除/
+└─ Local-AI-Backups/
+   └─ OpenWebUI-2026-10-02_143025/
+```
+
+每次備份會建立一個含日期與時間的資料夾，例如
+
+```text
+OpenWebUI-2026-10-02_143025
 ```
 
 - 若備份仍放在準備刪除的 Docker 資料卷內，移除環境時會連同備份一起消失
+- `Local-AI-Backups` 位於教材專案之外，不屬於 Docker 資料卷
+- GitHub Desktop 更新、重新 Clone 或更換教材專案資料夾時，不會覆蓋這個備份資料夾
 - 重要備份應再複製到另一個磁碟或隨身儲存裝置，避免電腦磁碟故障時原始資料與備份同時遺失
 
 ### 還原會回到備份當下的狀態
@@ -79,7 +92,7 @@ Documents\Local-AI-Backups
 └─ 08_data-management.cmd
 ```
 
-管理程式會讀取相鄰的單元 03 資料夾，因此不要單獨移動 `08_data-management.cmd`
+> 管理程式會依照目前資料夾位置，前往相鄰的單元 03 讀取 `03_compose.yaml`。若只移動 `08_data-management.cmd`，程式便找不到本課程的服務設定，因此應保留單元 03 與單元 08 的相對位置
 
 ### 步驟二 準備還原測試資料
 
@@ -96,7 +109,7 @@ Documents\Local-AI-Backups
 2. 在 `08_data-management.cmd` 上按兩下
 3. 輸入 `1` 並按 Enter
 4. 等待程式停止服務並複製資料
-5. 看到 `Backup completed successfully` 後記錄備份資料夾位置
+5. 看到 `Backup completed successfully` 後記錄備份資料夾名稱與位置
 6. 按任意鍵返回選單
 7. 輸入 `0` 結束程式
 
@@ -105,10 +118,11 @@ Documents\Local-AI-Backups
 ### 步驟四 檢查備份
 
 1. 開啟程式顯示的備份資料夾
-2. 確認其中包含 `BACKUP_INFO.txt`
-3. 開啟 `open-webui-data` 資料夾
-4. 確認其中包含 `webui.db`
-5. 確認備份資料夾中沒有 `INCOMPLETE.txt`
+2. 確認資料夾名稱含有備份日期與時間，例如 `OpenWebUI-2026-10-02_143025`
+3. 確認其中包含 `BACKUP_INFO.txt`
+4. 開啟 `open-webui-data` 資料夾
+5. 確認其中包含 `webui.db`
+6. 確認備份資料夾中沒有 `INCOMPLETE.txt`
 
 > 備份資料夾若包含 `INCOMPLETE.txt`，代表複製未完成，不可用於還原
 
@@ -147,6 +161,8 @@ Documents\Local-AI-Backups
 
 ### 步驟八 認識移除操作
 
+> 本步驟先閱讀與辨認，不要在單元 09 成果驗收前執行
+
 `08_data-management.cmd` 的選項 `3 Remove the local AI environment` 會要求輸入 `DELETE` 才能繼續
 
 執行後會移除
@@ -161,13 +177,12 @@ Documents\Local-AI-Backups
 
 - Docker Desktop 與 WSL2
 - 教材資料夾
-- `Documents\Local-AI-Backups` 中的備份
-
-> 本步驟先閱讀與辨認，不要在單元 09 成果驗收前執行
+- 教材專案旁 `Local-AI-Backups` 資料夾中的備份
 
 ## 5 成功檢查
 
 - 已建立不含 `INCOMPLETE.txt` 的備份資料夾
+- 備份資料夾位於教材專案旁的 `Local-AI-Backups`，名稱含有建立日期與時間
 - 備份中包含 `BACKUP_INFO.txt` 與 `open-webui-data\webui.db`
 - 備份前建立的測試對話可在還原後開啟
 - 備份後建立的測試對話已在還原後消失
@@ -179,7 +194,7 @@ Documents\Local-AI-Backups
 
 ### 找不到單元 03 的設定檔
 
-保持教材原有資料夾結構，不要只複製 `08_data-management.cmd`，單元 03 與單元 08 資料夾應位於同一層
+`08_data-management.cmd` 會從單元 08 的位置尋找相鄰單元 03 內的 `03_compose.yaml`。保持教材原有資料夾結構，不要只複製或移動管理程式，單元 03 與單元 08 資料夾應位於同一層
 
 ### 備份資料夾包含 INCOMPLETE.txt
 
